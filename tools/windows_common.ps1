@@ -123,8 +123,8 @@ function Expand-TMZip {
 function Get-TMSharedToolsDir {
     param([Parameter(Mandatory = $true)][string]$Root)
 
-    if ($env:THRASH_MACHINE_TOOLS_DIR) {
-        return [System.IO.Path]::GetFullPath($env:THRASH_MACHINE_TOOLS_DIR)
+    if ($env:SPIN_CHARA_TOOLS_DIR) {
+        return [System.IO.Path]::GetFullPath($env:SPIN_CHARA_TOOLS_DIR)
     }
 
     $candidate = [System.IO.Path]::GetFullPath($Root)
@@ -141,7 +141,7 @@ function Get-TMSharedToolsDir {
     }
 
     $projectLocalKristal = [System.IO.Path]::GetFullPath((Join-Path $Root '.build\Kristal'))
-    foreach ($engine in @($env:THRASH_MACHINE_KRISTAL_DIR, $env:KRISTAL_ROOT)) {
+    foreach ($engine in @($env:SPIN_CHARA_KRISTAL_DIR, $env:KRISTAL_ROOT)) {
         if (-not $engine) {
             continue
         }
@@ -231,11 +231,11 @@ function Invoke-TMBuildHelper {
     }
 
     $argumentsFile = [System.IO.Path]::GetTempFileName()
-    $previousArgumentsFile = $env:THRASH_MACHINE_HELPER_ARGS
+    $previousArgumentsFile = $env:SPIN_CHARA_HELPER_ARGS
     try {
         $encoding = New-Object System.Text.UTF8Encoding($false)
         [System.IO.File]::WriteAllText($argumentsFile, (($Arguments -join "`n") + "`n"), $encoding)
-        $env:THRASH_MACHINE_HELPER_ARGS = $argumentsFile
+        $env:SPIN_CHARA_HELPER_ARGS = $argumentsFile
         & $LoveExecutable (Join-Path $Root 'build-helper') | Out-Host
         $exitCode = $LASTEXITCODE
         if ($exitCode -ne 0) {
@@ -244,9 +244,9 @@ function Invoke-TMBuildHelper {
     } finally {
         Remove-Item -LiteralPath $argumentsFile -Force -ErrorAction SilentlyContinue
         if ($null -eq $previousArgumentsFile) {
-            Remove-Item Env:THRASH_MACHINE_HELPER_ARGS -ErrorAction SilentlyContinue
+            Remove-Item Env:SPIN_CHARA_HELPER_ARGS -ErrorAction SilentlyContinue
         } else {
-            $env:THRASH_MACHINE_HELPER_ARGS = $previousArgumentsFile
+            $env:SPIN_CHARA_HELPER_ARGS = $previousArgumentsFile
         }
     }
 }
@@ -254,7 +254,7 @@ function Invoke-TMBuildHelper {
 function Open-TMOutputDirectory {
     param([Parameter(Mandatory = $true)][string]$Directory)
 
-    if ($env:THRASH_MACHINE_NO_OPEN_DIR -eq '1') {
+    if ($env:SPIN_CHARA_NO_OPEN_DIR -eq '1') {
         return
     }
     Invoke-Item -LiteralPath $Directory

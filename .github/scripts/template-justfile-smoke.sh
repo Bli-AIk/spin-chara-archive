@@ -19,7 +19,7 @@ run_dry() {
 
 output=$(run_dry --wave 2 --tp 50 --mercy 100)
 printf '%s\n' "$output" | grep -Fqx "mod_root=$root"
-printf '%s\n' "$output" | grep -Fqx 'mod_id=thrash-machine'
+printf '%s\n' "$output" | grep -Fqx 'mod_id=spin-chara'
 printf '%s\n' "$output" | grep -F -- '--wave 2' >/dev/null
 printf '%s\n' "$output" | grep -F -- '--tp 50' >/dev/null
 printf '%s\n' "$output" | grep -F -- '--mercy 100' >/dev/null
@@ -154,7 +154,7 @@ explicit_log="$launcher_tmp/explicit.log"
 printf '%s\n' '#!/bin/sh' 'printf "%s\\n" "$*" > "$SIDE_LOG"' > "$explicit_run"
 chmod +x "$explicit_run"
 : > "$unknown_log"
-CURL_LOG="$unknown_log" SIDE_LOG="$explicit_log" KRISTAL_ROOT= THRASH_MACHINE_KRISTAL_DIR= JUST= KRISTAL_RUN="$explicit_run" \
+CURL_LOG="$unknown_log" SIDE_LOG="$explicit_log" KRISTAL_ROOT= SPIN_CHARA_KRISTAL_DIR= JUST= KRISTAL_RUN="$explicit_run" \
     PATH="$launcher_bin:/usr/bin:/bin" "$root/tools/just" build
 grep -Fqx "just-task $root/justfile build" "$explicit_log"
 test ! -s "$unknown_log"

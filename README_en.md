@@ -1,9 +1,9 @@
-# Thrash Machine
+# spin-chara
 
-[![license](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](LICENSE-APACHE) <img src="https://img.shields.io/github/repo-size/Bli-AIk/thrash-machine.svg"/> <img src="https://img.shields.io/github/last-commit/Bli-AIk/thrash-machine.svg"/> <img src="https://img.shields.io/github/v/release/Bli-AIk/thrash-machine.svg"/> <br>
+[![license](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](LICENSE-APACHE) <img src="https://img.shields.io/github/repo-size/Bli-AIk/spin-chara.svg"/> <img src="https://img.shields.io/github/last-commit/Bli-AIk/spin-chara.svg"/> <img src="https://img.shields.io/github/v/release/Bli-AIk/spin-chara.svg"/> <br>
 <img src="https://img.shields.io/badge/Deltarune-001225?style=for-the-badge&labelColor=001225&logo=undertale&logoColor=ff0000" /> <img src="https://img.shields.io/badge/Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white" /> <img src="https://img.shields.io/badge/Kristal-FF6B35?style=for-the-badge&logo=love2d&logoColor=white" />
 
-**Thrash Machine** — a Kristal template for getting work done: the utility packages I maintain (localization, object editor, debug tools...) are all wired up as submodules, so you can start building right away.
+**spin-chara** — a Kristal template for getting work done: the utility packages I maintain (localization, object editor, debug tools...) are all wired up as submodules, so you can start building right away.
 
 | English | 简体中文                |
 | ------- | ----------------------- |
@@ -11,7 +11,7 @@
 
 ## Kristal Version Support
 
-| `kristal`                                                                                                                     | `thrash-machine` |
+| `kristal`                                                                                                                     | `spin-chara` |
 | ----------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | [v0.11.0-dev](https://github.com/KristalTeam/Kristal/commit/f62afea63ccab02f468c24ac0d096bd8a2c9aa81) (`f62afea`, 2026-08-16) | v0.2.0 - v0.3.0  |
 | [v0.10.0](https://github.com/KristalTeam/Kristal/commit/752bc0688ba97ca8a256ba9125b7e05a1ca6edbd) (`752bc068`, 2026-06-23)    | v0.0.0 – v0.1.0  |
@@ -58,15 +58,15 @@ git submodule update --init libraries/MagicalGlassRedux libraries/UndertaleMonst
 
 **Option 1: Direct download (quick)**
 
-Download `thrash-machine-<version>-full-source.zip` (or `.tar.gz`) from the [Releases](https://github.com/Bli-AIk/thrash-machine/releases) page — the complete source with all submodules already checked out, ready to unpack.
+Download `spin-chara-<version>-full-source.zip` (or `.tar.gz`) from the [Releases](https://github.com/Bli-AIk/spin-chara/releases) page — the complete source with all submodules already checked out, ready to unpack.
 
 **Option 2: Version control**
 
 This is a **template repository**: click **Use this template** on the repo page to create your own copy (submodule references come along), then clone your own repo — your version history and releases stay yours. Cloning directly works too:
 
 ```sh
-git clone --recurse-submodules https://github.com/Bli-AIk/thrash-machine.git
-cd thrash-machine
+git clone --recurse-submodules https://github.com/Bli-AIk/spin-chara.git
+cd spin-chara
 ```
 
 **2. Make it yours**
@@ -141,7 +141,7 @@ Linux needs git, tar, unzip, curl, love (Arch: `sudo pacman -S love`); Windows n
 - **Wrap build**: `just build-android-wrap`, no Android SDK/NDK needed — JDK 17, the official LÖVE shell APK and build-tools are fetched automatically; good for quick personal usage; the trade-off is a fixed package name/icon/app name, and no Google Play publishing.
 - **Compile build**: `just build-android`, builds the APK from source with custom package name/icon; use this for real distribution.
 
-On Windows, double-click `tools\build_android.cmd` and follow the prompts (arguments also work: `build_android.cmd wrap` / `build_android.cmd compile`); neither path needs Git Bash. JDK resolution order: `THRASH_MACHINE_ANDROID_JAVA_HOME` / `JAVA_HOME` (explicit) → a version-matching `java` on PATH → auto-downloaded portable Temurin 17 (`THRASH_MACHINE_FETCH_JDK=0` disables the download).
+On Windows, double-click `tools\build_android.cmd` and follow the prompts (arguments also work: `build_android.cmd wrap` / `build_android.cmd compile`); neither path needs Git Bash. JDK resolution order: `SPIN_CHARA_ANDROID_JAVA_HOME` / `JAVA_HOME` (explicit) → a version-matching `java` on PATH → auto-downloaded portable Temurin 17 (`SPIN_CHARA_FETCH_JDK=0` disables the download).
 
 ### GUI packaging
 
@@ -154,12 +154,12 @@ The launcher only downloads the fixed release matching the current engine versio
 
 ### Engine source
 
-Builds pin Kristal `f62afea63ccab02f468c24ac0d096bd8a2c9aa81` (`0.11.0-dev`, shallow-cloned to `.build/Kristal`). To change the source: run `THRASH_MACHINE_KRISTAL_SOURCE=ask just build` in an interactive terminal and pick (local path / remote tag / full commit), or set environment variables:
+Builds pin Kristal `f62afea63ccab02f468c24ac0d096bd8a2c9aa81` (`0.11.0-dev`, shallow-cloned to `.build/Kristal`). To change the source: run `SPIN_CHARA_KRISTAL_SOURCE=ask just build` in an interactive terminal and pick (local path / remote tag / full commit), or set environment variables:
 
-- `THRASH_MACHINE_KRISTAL_SOURCE=local|path|tag|commit` — source type
-- `THRASH_MACHINE_KRISTAL_DIR` / `KRISTAL_ROOT` — local path
-- `THRASH_MACHINE_KRISTAL_REF` — tag or commit hash
-- `THRASH_MACHINE_KRISTAL_REPO` — override the remote repository
+- `SPIN_CHARA_KRISTAL_SOURCE=local|path|tag|commit` — source type
+- `SPIN_CHARA_KRISTAL_DIR` / `KRISTAL_ROOT` — local path
+- `SPIN_CHARA_KRISTAL_REF` — tag or commit hash
+- `SPIN_CHARA_KRISTAL_REPO` — override the remote repository
 
 ### Automatic releases
 

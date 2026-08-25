@@ -98,8 +98,8 @@ jobs:
           # Unlike GitHub's auto-generated archives, include the checked-out
           # submodule contents so the mod is complete and usable as-is.
           tar --exclude='.git' --exclude='.build' --exclude='dist*' --exclude='.tools' --exclude='.worktrees' \
-            -czf "dist/thrash-machine-$TAG-full-source.tar.gz" -C "$PWD" .
-          (cd "$PWD" && zip -qr "dist/thrash-machine-$TAG-full-source.zip" . \
+            -czf "dist/spin-chara-$TAG-full-source.tar.gz" -C "$PWD" .
+          (cd "$PWD" && zip -qr "dist/spin-chara-$TAG-full-source.zip" . \
             -x '.git*' '.build*' 'dist*' '.tools*' '.worktrees*')
 
       - name: Generate and verify SHA-256 manifest
@@ -108,7 +108,7 @@ jobs:
           (cd dist && sha256sum -c SHA256SUMS)
       - uses: actions/upload-artifact@v4
         with:
-          name: thrash-machine-${{ env.RELEASE_TAG }}
+          name: spin-chara-${{ env.RELEASE_TAG }}
           path: dist/
           if-no-files-found: error
       - name: Publish release assets
@@ -117,7 +117,7 @@ jobs:
         run: |
           set -euo pipefail
           if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            gh release create "$RELEASE_TAG" --title "Thrash Machine $RELEASE_TAG" --generate-notes
+            gh release create "$RELEASE_TAG" --title "spin-chara $RELEASE_TAG" --generate-notes
           fi
           files=()
           for pattern in '*.love' '*-win64.zip' '*-mod.zip' '*.apk' '*-full-source.tar.gz' '*-full-source.zip'; do

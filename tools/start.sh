@@ -152,7 +152,7 @@ esac
 if [ "$legacy_aliases_enabled" -eq 0 ]; then
     # The full current/template ID handles this derived template name.
     # Disabling the short alias prevents it from being replaced twice.
-    legacy_alias_sentinel=$(printf '__legacy_alias_disabled__')
+    legacy_alias_sentinel=$(printf 'spin-chara')
     legacy_id=$legacy_alias_sentinel
     legacy_display=$legacy_alias_sentinel
     legacy_lower_spaced=$legacy_alias_sentinel

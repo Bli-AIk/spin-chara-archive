@@ -4,7 +4,7 @@ set -eu
 : "${KRISTAL:?set KRISTAL to a clean Kristal 0.11.0-dev checkout}"
 
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd -P)
-mod_id=thrash-machine
+mod_id=spin-chara
 mod_path="$KRISTAL/mods/$mod_id"
 log=$(mktemp)
 sandbox=$(mktemp -d)

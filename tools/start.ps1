@@ -146,13 +146,13 @@ $old_compact = $old_id -replace '[-_]', ''
 
 # Some derived projects changed mod.json before this script was introduced.
 # Keep the original template aliases so those projects can still be migrated.
-$legacy_id = 'thrash-machine'
-$legacy_display = 'Thrash Machine'
-$legacy_lower_spaced = 'thrash machine'
-$legacy_upper_spaced = 'THRASH MACHINE'
-$legacy_env_prefix = 'THRASH_MACHINE'
-$legacy_upper_hyphen = 'THRASH-MACHINE'
-$legacy_compact = 'thrashmachine'
+$legacy_id = 'spin-chara'
+$legacy_display = 'spin-chara'
+$legacy_lower_spaced = 'spin-chara'
+$legacy_upper_spaced = 'SPIN-CHARA'
+$legacy_env_prefix = 'SPIN_CHARA'
+$legacy_upper_hyphen = 'SPIN-CHARA'
+$legacy_compact = 'spinchara'
 
 $new_lower_spaced = $project_name.ToLowerInvariant()
 $new_upper_spaced = $project_name.ToUpperInvariant()
@@ -180,7 +180,7 @@ if ($template_id -eq $legacy_id -or $template_id -like "$legacy_id-*" -or $templ
 if (-not $legacy_aliases_enabled) {
     # The full current/template ID handles this derived template name.
     # Disabling the short alias prevents it from being replaced twice.
-    $sentinel = '__legacy_alias_disabled__'
+    $sentinel = 'spin-chara'
     $legacy_id = $sentinel
     $legacy_display = $sentinel
     $legacy_lower_spaced = $sentinel

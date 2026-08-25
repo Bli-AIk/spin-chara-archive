@@ -25,13 +25,13 @@ test-kristal:
 	KRISTAL="$${KRISTAL:-$$(sh .github/scripts/find-kristal.sh 2>/dev/null)}" sh .github/scripts/run-kristal-smoke.sh
 
 build-love:
-	THRASH_MACHINE_BUILD_LOVE=1 THRASH_MACHINE_BUILD_WINDOWS_EXE=0 ./tools/build_standalone.sh
+	SPIN_CHARA_BUILD_LOVE=1 SPIN_CHARA_BUILD_WINDOWS_EXE=0 ./tools/build_standalone.sh
 
 build-win:
-	THRASH_MACHINE_BUILD_LOVE=0 THRASH_MACHINE_BUILD_WINDOWS_EXE=1 ./tools/build_standalone.sh
+	SPIN_CHARA_BUILD_LOVE=0 SPIN_CHARA_BUILD_WINDOWS_EXE=1 ./tools/build_standalone.sh
 
 build:
-	THRASH_MACHINE_BUILD_LOVE=1 THRASH_MACHINE_BUILD_WINDOWS_EXE=1 ./tools/build_standalone.sh
+	SPIN_CHARA_BUILD_LOVE=1 SPIN_CHARA_BUILD_WINDOWS_EXE=1 ./tools/build_standalone.sh
 
 build-android:
 	./tools/build_android.sh

@@ -22,15 +22,15 @@ $Root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 . (Join-Path $PSScriptRoot 'windows_common.ps1')
 
 $ToolsDir = Get-TMSharedToolsDir $Root
-$BuildRoot = Get-TMEnvOrDefault 'THRASH_MACHINE_BUILD_ROOT' (Join-Path $Root '.build\standalone')
-$OutputDir = Get-TMEnvOrDefault 'THRASH_MACHINE_OUTPUT_DIR' (Join-Path $Root 'dist')
-$CacheDir = Get-TMEnvOrDefault 'THRASH_MACHINE_CACHE_DIR' (Join-Path $Root '.build\cache')
-$ModId = Get-TMEnvOrDefault 'THRASH_MACHINE_MOD_ID' 'thrash-machine'
-$ProjectTitle = Get-TMEnvOrDefault 'THRASH_MACHINE_PROJECT_TITLE' 'Thrash Machine'
-$OutputBasename = Get-TMEnvOrDefault 'THRASH_MACHINE_OUTPUT_BASENAME' 'thrash-machine'
-$ExeBasename = Get-TMEnvOrDefault 'THRASH_MACHINE_EXE_BASENAME' 'THRASH-MACHINE'
-$LoveVersion = Get-TMEnvOrDefault 'THRASH_MACHINE_LOVE_VERSION' '11.5'
-$LoveArch = Get-TMEnvOrDefault 'THRASH_MACHINE_LOVE_ARCH' 'win64'
+$BuildRoot = Get-TMEnvOrDefault 'SPIN_CHARA_BUILD_ROOT' (Join-Path $Root '.build\standalone')
+$OutputDir = Get-TMEnvOrDefault 'SPIN_CHARA_OUTPUT_DIR' (Join-Path $Root 'dist')
+$CacheDir = Get-TMEnvOrDefault 'SPIN_CHARA_CACHE_DIR' (Join-Path $Root '.build\cache')
+$ModId = Get-TMEnvOrDefault 'SPIN_CHARA_MOD_ID' 'spin-chara'
+$ProjectTitle = Get-TMEnvOrDefault 'SPIN_CHARA_PROJECT_TITLE' 'spin-chara'
+$OutputBasename = Get-TMEnvOrDefault 'SPIN_CHARA_OUTPUT_BASENAME' 'spin-chara'
+$ExeBasename = Get-TMEnvOrDefault 'SPIN_CHARA_EXE_BASENAME' 'SPIN-CHARA'
+$LoveVersion = Get-TMEnvOrDefault 'SPIN_CHARA_LOVE_VERSION' '11.5'
+$LoveArch = Get-TMEnvOrDefault 'SPIN_CHARA_LOVE_ARCH' 'win64'
 $script:TMGit = $null
 
 function Get-TMGit {
@@ -76,7 +76,7 @@ function Find-TMLocalKristal {
         $candidate = $parent.FullName
     }
 
-    foreach ($configured in @($env:THRASH_MACHINE_KRISTAL_DIR, $env:KRISTAL_ROOT)) {
+    foreach ($configured in @($env:SPIN_CHARA_KRISTAL_DIR, $env:KRISTAL_ROOT)) {
         if ($configured -and (Test-Path -LiteralPath (Join-Path $configured 'main.lua'))) {
             return [System.IO.Path]::GetFullPath($configured)
         }
@@ -119,11 +119,11 @@ function Invoke-TMFetchKristalReference {
 
 function Resolve-TMKristal {
     $pinnedReference = 'f62afea63ccab02f468c24ac0d096bd8a2c9aa81'
-    $configuredReference = $env:THRASH_MACHINE_KRISTAL_REF
+    $configuredReference = $env:SPIN_CHARA_KRISTAL_REF
     $reference = if ($configuredReference) { $configuredReference } else { $pinnedReference }
-    $source = $env:THRASH_MACHINE_KRISTAL_SOURCE
-    $configuredDirectory = if ($env:THRASH_MACHINE_KRISTAL_DIR) {
-        $env:THRASH_MACHINE_KRISTAL_DIR
+    $source = $env:SPIN_CHARA_KRISTAL_SOURCE
+    $configuredDirectory = if ($env:SPIN_CHARA_KRISTAL_DIR) {
+        $env:SPIN_CHARA_KRISTAL_DIR
     } elseif ($env:KRISTAL_ROOT) {
         $env:KRISTAL_ROOT
     } else {
@@ -162,19 +162,19 @@ function Resolve-TMKristal {
     }
 
     if ($source -notin @('local', 'path', 'commit', 'tag', 'branch')) {
-        throw "Unknown THRASH_MACHINE_KRISTAL_SOURCE: $source"
+        throw "Unknown SPIN_CHARA_KRISTAL_SOURCE: $source"
     }
     if ($source -eq 'commit' -and $reference -notmatch '^[0-9a-fA-F]{40}$') {
-        throw 'THRASH_MACHINE_KRISTAL_SOURCE=commit requires a 40-character THRASH_MACHINE_KRISTAL_REF.'
+        throw 'SPIN_CHARA_KRISTAL_SOURCE=commit requires a 40-character SPIN_CHARA_KRISTAL_REF.'
     }
     if ($source -in @('tag', 'branch') -and [string]::IsNullOrWhiteSpace($reference)) {
-        throw "THRASH_MACHINE_KRISTAL_SOURCE=$source requires THRASH_MACHINE_KRISTAL_REF."
+        throw "SPIN_CHARA_KRISTAL_SOURCE=$source requires SPIN_CHARA_KRISTAL_REF."
     }
 
     if ($source -in @('local', 'path')) {
         $directory = if ($configuredDirectory) { $configuredDirectory } else { Find-TMLocalKristal }
         if (-not $directory -or -not (Test-Path -LiteralPath (Join-Path $directory 'main.lua'))) {
-            throw 'No usable local Kristal checkout was found. Set THRASH_MACHINE_KRISTAL_DIR or use the default pinned source.'
+            throw 'No usable local Kristal checkout was found. Set SPIN_CHARA_KRISTAL_DIR or use the default pinned source.'
         }
         $directory = [System.IO.Path]::GetFullPath($directory)
         $isGit = Test-TMGitWorkTree $directory
@@ -195,22 +195,22 @@ function Resolve-TMKristal {
         } else {
             New-Item -ItemType Directory -Force -Path (Split-Path -Parent $directory) | Out-Null
             Invoke-TMNative $git @('init', '-q', $directory)
-            Invoke-TMNative $git @('-C', $directory, 'remote', 'add', 'origin', (Get-TMEnvOrDefault 'THRASH_MACHINE_KRISTAL_REPO' 'https://github.com/KristalTeam/Kristal.git'))
+            Invoke-TMNative $git @('-C', $directory, 'remote', 'add', 'origin', (Get-TMEnvOrDefault 'SPIN_CHARA_KRISTAL_REPO' 'https://github.com/KristalTeam/Kristal.git'))
         }
 
         if (($source -eq 'branch') -or -not (Test-TMGitReference $directory $reference)) {
             Write-TMInfo "Fetching Kristal $source $reference"
             Invoke-TMFetchKristalReference $directory $source $reference
-        } elseif ($env:THRASH_MACHINE_UPDATE_REPOS -eq '1') {
+        } elseif ($env:SPIN_CHARA_UPDATE_REPOS -eq '1') {
             Invoke-TMNative $git @('-C', $directory, 'fetch', '--depth', '1', '--tags', 'origin')
         }
         Invoke-TMNative $git @('-C', $directory, '-c', 'advice.detachedHead=false', 'checkout', '--detach', $reference)
         $isGit = $true
     }
 
-    $expectedVersion = Get-TMEnvOrDefault 'THRASH_MACHINE_KRISTAL_EXPECTED_VERSION' '0.11.0-dev'
-    $verifyVersion = if ($null -ne $env:THRASH_MACHINE_KRISTAL_VERIFY_VERSION) {
-        $env:THRASH_MACHINE_KRISTAL_VERIFY_VERSION -eq '1'
+    $expectedVersion = Get-TMEnvOrDefault 'SPIN_CHARA_KRISTAL_EXPECTED_VERSION' '0.11.0-dev'
+    $verifyVersion = if ($null -ne $env:SPIN_CHARA_KRISTAL_VERIFY_VERSION) {
+        $env:SPIN_CHARA_KRISTAL_VERIFY_VERSION -eq '1'
     } else {
         $source -eq 'commit' -and $reference -eq $pinnedReference
     }
@@ -372,8 +372,8 @@ function Stage-TMWindowIcon {
         [Parameter(Mandatory = $true)][string]$LoveExecutable
     )
 
-    $iconDirectory = Get-TMEnvOrDefault 'THRASH_MACHINE_ICON_DIR' (Join-Path $Root 'assets\icon')
-    $windowIcon = Get-TMEnvOrDefault 'THRASH_MACHINE_WINDOW_ICON' (Join-Path $iconDirectory 'window_icon.png')
+    $iconDirectory = Get-TMEnvOrDefault 'SPIN_CHARA_ICON_DIR' (Join-Path $Root 'assets\icon')
+    $windowIcon = Get-TMEnvOrDefault 'SPIN_CHARA_WINDOW_ICON' (Join-Path $iconDirectory 'window_icon.png')
     if (Test-Path -LiteralPath $windowIcon) {
         Copy-Item -LiteralPath $windowIcon -Destination (Join-Path $StageMod 'window_icon.png') -Force
         Invoke-TMBuildHelper $Root $LoveExecutable @('set-mod-json-flag', (Join-Path $StageMod 'mod.json'), 'setWindowTitleAndIcon', 'true')
@@ -412,7 +412,7 @@ function Prepare-TMStandaloneStage {
     Invoke-TMBuildHelper $Root $LoveExecutable @(
         'patch-lua-config', $stageDirectory, $ModId, $releaseMode, $identity, $title
     )
-    if ($env:THRASH_MACHINE_ANDROID_TOUCH_SKIP_INTRO -eq '1') {
+    if ($env:SPIN_CHARA_ANDROID_TOUCH_SKIP_INTRO -eq '1') {
         Invoke-TMBuildHelper $Root $LoveExecutable @(
             'patch-android-loading-touch', (Join-Path $stageDirectory 'src\engine\loadstate.lua')
         )
@@ -425,7 +425,7 @@ function Prepare-TMStandaloneStage {
 }
 
 function Ensure-TMWindowsLoveDistribution {
-    $url = Get-TMEnvOrDefault 'THRASH_MACHINE_LOVE_WINDOWS_ZIP_URL' "https://github.com/love2d/love/releases/download/$LoveVersion/love-$LoveVersion-$LoveArch.zip"
+    $url = Get-TMEnvOrDefault 'SPIN_CHARA_LOVE_WINDOWS_ZIP_URL' "https://github.com/love2d/love/releases/download/$LoveVersion/love-$LoveVersion-$LoveArch.zip"
     $archive = Join-Path $CacheDir "love-$LoveVersion-$LoveArch.zip"
     $destination = Join-Path $CacheDir "love-$LoveVersion-$LoveArch"
     if (-not (Test-Path -LiteralPath $archive) -or (Get-Item -LiteralPath $archive).Length -eq 0) {
@@ -451,8 +451,8 @@ function Ensure-TMWindowsLoveDistribution {
 function Get-TMWindowsIcon {
     param([Parameter(Mandatory = $true)][string]$WorkDirectory)
 
-    $iconDirectory = Get-TMEnvOrDefault 'THRASH_MACHINE_ICON_DIR' (Join-Path $Root 'assets\icon')
-    $windowsIconDirectory = Get-TMEnvOrDefault 'THRASH_MACHINE_WIN_ICON_DIR' (Join-Path $iconDirectory 'win')
+    $iconDirectory = Get-TMEnvOrDefault 'SPIN_CHARA_ICON_DIR' (Join-Path $Root 'assets\icon')
+    $windowsIconDirectory = Get-TMEnvOrDefault 'SPIN_CHARA_WIN_ICON_DIR' (Join-Path $iconDirectory 'win')
     $readyIcon = Join-Path $windowsIconDirectory 'icon.ico'
     if (Test-Path -LiteralPath $readyIcon) {
         return $readyIcon
@@ -478,7 +478,7 @@ function Get-TMWindowsIcon {
 }
 
 function Get-TMRcedit {
-    $configured = $env:THRASH_MACHINE_RCEDit
+    $configured = $env:SPIN_CHARA_RCEDit
     if ($configured) {
         if (Test-Path -LiteralPath $configured) { return $configured }
         $command = Find-TMCommand $configured
@@ -489,8 +489,8 @@ function Get-TMRcedit {
     if (Test-Path -LiteralPath $cached) { return $cached }
     $command = Find-TMCommand 'rcedit.exe'
     if ($command) { return $command.Source }
-    if ($env:THRASH_MACHINE_ICON_FETCH_TOOLS -ne '1') { return $null }
-    $url = Get-TMEnvOrDefault 'THRASH_MACHINE_RCEDit_URL' 'https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe'
+    if ($env:SPIN_CHARA_ICON_FETCH_TOOLS -ne '1') { return $null }
+    $url = Get-TMEnvOrDefault 'SPIN_CHARA_RCEDit_URL' 'https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe'
     Invoke-TMDownload $url $cached
     return $cached
 }
@@ -602,9 +602,9 @@ function Build-TMStandaloneVariant {
 function Build-TMModPackage {
     param([Parameter(Mandatory = $true)][string]$LoveExecutable)
 
-    $buildDirectory = Get-TMEnvOrDefault 'THRASH_MACHINE_MOD_BUILD_DIR' (Join-Path $Root '.build\mod')
+    $buildDirectory = Get-TMEnvOrDefault 'SPIN_CHARA_MOD_BUILD_DIR' (Join-Path $Root '.build\mod')
     $stageDirectory = Join-Path $buildDirectory 'source'
-    $outputFile = Get-TMEnvOrDefault 'THRASH_MACHINE_MOD_OUTPUT_FILE' (Join-Path $OutputDir 'thrash-machine-mod.zip')
+    $outputFile = Get-TMEnvOrDefault 'SPIN_CHARA_MOD_OUTPUT_FILE' (Join-Path $OutputDir 'spin-chara-mod.zip')
     Remove-TMPathIfPresent $stageDirectory
     New-Item -ItemType Directory -Force -Path $stageDirectory | Out-Null
     Copy-TMModTree $stageDirectory
@@ -630,9 +630,9 @@ if ($Target -eq 'mod') {
 
 $buildLove = $Target -in @('all', 'love')
 $buildWindows = $Target -in @('all', 'win')
-$variants = (Get-TMEnvOrDefault 'THRASH_MACHINE_BUILD_VARIANTS' 'release debug').Split(@(' ', "`t"), [System.StringSplitOptions]::RemoveEmptyEntries)
+$variants = (Get-TMEnvOrDefault 'SPIN_CHARA_BUILD_VARIANTS' 'release debug').Split(@(' ', "`t"), [System.StringSplitOptions]::RemoveEmptyEntries)
 if ($variants.Count -eq 0) {
-    throw 'THRASH_MACHINE_BUILD_VARIANTS must name at least one variant.'
+    throw 'SPIN_CHARA_BUILD_VARIANTS must name at least one variant.'
 }
 $Kristal = Resolve-TMKristal
 $currentVariant = $null

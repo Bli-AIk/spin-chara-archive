@@ -3,54 +3,54 @@ set -euo pipefail
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 # Scripts live in tools/; the mod root is one level up.
-THRASH_MACHINE_MOD_DIR="${THRASH_MACHINE_MOD_DIR:-$(CDPATH= cd -- "$(dirname -- "$SCRIPT_DIR")" && pwd -P)}"
-THRASH_MACHINE_MOD_DIR="$(CDPATH= cd -- "$THRASH_MACHINE_MOD_DIR" && pwd -P)"
-THRASH_MACHINE_BUILD_ROOT="${THRASH_MACHINE_BUILD_ROOT:-$THRASH_MACHINE_MOD_DIR/.build/standalone}"
-THRASH_MACHINE_OUTPUT_DIR="${THRASH_MACHINE_OUTPUT_DIR:-$THRASH_MACHINE_MOD_DIR/dist}"
-THRASH_MACHINE_CACHE_DIR="${THRASH_MACHINE_CACHE_DIR:-$THRASH_MACHINE_MOD_DIR/.build/cache}"
+SPIN_CHARA_MOD_DIR="${SPIN_CHARA_MOD_DIR:-$(CDPATH= cd -- "$(dirname -- "$SCRIPT_DIR")" && pwd -P)}"
+SPIN_CHARA_MOD_DIR="$(CDPATH= cd -- "$SPIN_CHARA_MOD_DIR" && pwd -P)"
+SPIN_CHARA_BUILD_ROOT="${SPIN_CHARA_BUILD_ROOT:-$SPIN_CHARA_MOD_DIR/.build/standalone}"
+SPIN_CHARA_OUTPUT_DIR="${SPIN_CHARA_OUTPUT_DIR:-$SPIN_CHARA_MOD_DIR/dist}"
+SPIN_CHARA_CACHE_DIR="${SPIN_CHARA_CACHE_DIR:-$SPIN_CHARA_MOD_DIR/.build/cache}"
 
 # Remember what the user actually set before we fill in defaults. This keeps
-# an explicit KRISTAL_ROOT/THRASH_MACHINE_KRISTAL_DIR as a deliberate local
+# an explicit KRISTAL_ROOT/SPIN_CHARA_KRISTAL_DIR as a deliberate local
 # source while an unconfigured build uses the pinned commit below.
-THRASH_MACHINE_KRISTAL_REF_ENV="${THRASH_MACHINE_KRISTAL_REF:-}"
-THRASH_MACHINE_KRISTAL_EXPECTED_VERSION_ENV="${THRASH_MACHINE_KRISTAL_EXPECTED_VERSION:-}"
-THRASH_MACHINE_KRISTAL_DIR_ENV="${THRASH_MACHINE_KRISTAL_DIR:-}"
+SPIN_CHARA_KRISTAL_REF_ENV="${SPIN_CHARA_KRISTAL_REF:-}"
+SPIN_CHARA_KRISTAL_EXPECTED_VERSION_ENV="${SPIN_CHARA_KRISTAL_EXPECTED_VERSION:-}"
+SPIN_CHARA_KRISTAL_DIR_ENV="${SPIN_CHARA_KRISTAL_DIR:-}"
 KRISTAL_ROOT_ENV="${KRISTAL_ROOT:-}"
-THRASH_MACHINE_KRISTAL_VERIFY_VERSION_ENV="${THRASH_MACHINE_KRISTAL_VERIFY_VERSION:-}"
+SPIN_CHARA_KRISTAL_VERIFY_VERSION_ENV="${SPIN_CHARA_KRISTAL_VERIFY_VERSION:-}"
 
-THRASH_MACHINE_KRISTAL_REPO="${THRASH_MACHINE_KRISTAL_REPO:-https://github.com/KristalTeam/Kristal.git}"
-THRASH_MACHINE_KRISTAL_REF="${THRASH_MACHINE_KRISTAL_REF:-f62afea63ccab02f468c24ac0d096bd8a2c9aa81}"
-THRASH_MACHINE_KRISTAL_EXPECTED_VERSION="${THRASH_MACHINE_KRISTAL_EXPECTED_VERSION:-0.11.0-dev}"
-THRASH_MACHINE_KRISTAL_DIR="${THRASH_MACHINE_KRISTAL_DIR:-${KRISTAL_ROOT:-$THRASH_MACHINE_MOD_DIR/.build/Kristal}}"
-THRASH_MACHINE_KRISTAL_SOURCE="${THRASH_MACHINE_KRISTAL_SOURCE:-}"
-THRASH_MACHINE_KRISTAL_VERIFY_VERSION="${THRASH_MACHINE_KRISTAL_VERIFY_VERSION:-1}"
+SPIN_CHARA_KRISTAL_REPO="${SPIN_CHARA_KRISTAL_REPO:-https://github.com/KristalTeam/Kristal.git}"
+SPIN_CHARA_KRISTAL_REF="${SPIN_CHARA_KRISTAL_REF:-f62afea63ccab02f468c24ac0d096bd8a2c9aa81}"
+SPIN_CHARA_KRISTAL_EXPECTED_VERSION="${SPIN_CHARA_KRISTAL_EXPECTED_VERSION:-0.11.0-dev}"
+SPIN_CHARA_KRISTAL_DIR="${SPIN_CHARA_KRISTAL_DIR:-${KRISTAL_ROOT:-$SPIN_CHARA_MOD_DIR/.build/Kristal}}"
+SPIN_CHARA_KRISTAL_SOURCE="${SPIN_CHARA_KRISTAL_SOURCE:-}"
+SPIN_CHARA_KRISTAL_VERIFY_VERSION="${SPIN_CHARA_KRISTAL_VERIFY_VERSION:-1}"
 
-THRASH_MACHINE_MOD_ID="${THRASH_MACHINE_MOD_ID:-thrash-machine}"
-THRASH_MACHINE_PROJECT_TITLE="${THRASH_MACHINE_PROJECT_TITLE:-Thrash Machine}"
-THRASH_MACHINE_OUTPUT_BASENAME="${THRASH_MACHINE_OUTPUT_BASENAME:-thrash-machine}"
-THRASH_MACHINE_EXE_BASENAME="${THRASH_MACHINE_EXE_BASENAME:-THRASH-MACHINE}"
-THRASH_MACHINE_LOVE_VERSION="${THRASH_MACHINE_LOVE_VERSION:-11.5}"
-THRASH_MACHINE_LOVE_ARCH="${THRASH_MACHINE_LOVE_ARCH:-win64}"
-THRASH_MACHINE_LOVE_WINDOWS_ZIP_URL="${THRASH_MACHINE_LOVE_WINDOWS_ZIP_URL:-https://github.com/love2d/love/releases/download/${THRASH_MACHINE_LOVE_VERSION}/love-${THRASH_MACHINE_LOVE_VERSION}-${THRASH_MACHINE_LOVE_ARCH}.zip}"
-THRASH_MACHINE_BUILD_VARIANTS="${THRASH_MACHINE_BUILD_VARIANTS:-release debug}"
-THRASH_MACHINE_BUILD_WINDOWS_EXE="${THRASH_MACHINE_BUILD_WINDOWS_EXE:-1}"
-THRASH_MACHINE_BUILD_LOVE="${THRASH_MACHINE_BUILD_LOVE:-1}"
-THRASH_MACHINE_UPDATE_REPOS="${THRASH_MACHINE_UPDATE_REPOS:-0}"
+SPIN_CHARA_MOD_ID="${SPIN_CHARA_MOD_ID:-spin-chara}"
+SPIN_CHARA_PROJECT_TITLE="${SPIN_CHARA_PROJECT_TITLE:-spin-chara}"
+SPIN_CHARA_OUTPUT_BASENAME="${SPIN_CHARA_OUTPUT_BASENAME:-spin-chara}"
+SPIN_CHARA_EXE_BASENAME="${SPIN_CHARA_EXE_BASENAME:-SPIN-CHARA}"
+SPIN_CHARA_LOVE_VERSION="${SPIN_CHARA_LOVE_VERSION:-11.5}"
+SPIN_CHARA_LOVE_ARCH="${SPIN_CHARA_LOVE_ARCH:-win64}"
+SPIN_CHARA_LOVE_WINDOWS_ZIP_URL="${SPIN_CHARA_LOVE_WINDOWS_ZIP_URL:-https://github.com/love2d/love/releases/download/${SPIN_CHARA_LOVE_VERSION}/love-${SPIN_CHARA_LOVE_VERSION}-${SPIN_CHARA_LOVE_ARCH}.zip}"
+SPIN_CHARA_BUILD_VARIANTS="${SPIN_CHARA_BUILD_VARIANTS:-release debug}"
+SPIN_CHARA_BUILD_WINDOWS_EXE="${SPIN_CHARA_BUILD_WINDOWS_EXE:-1}"
+SPIN_CHARA_BUILD_LOVE="${SPIN_CHARA_BUILD_LOVE:-1}"
+SPIN_CHARA_UPDATE_REPOS="${SPIN_CHARA_UPDATE_REPOS:-0}"
 
 # --- icons (all optional) ----------------------------------------------------
 # Convention: <mod-root>/assets/icon/{window_icon.png, win/, android/}.
 # Every step is skipped (with a warning) when the icon file or the required
 # tool is missing, so the default build is unchanged without any icons.
-THRASH_MACHINE_ICON_DIR="${THRASH_MACHINE_ICON_DIR:-$THRASH_MACHINE_MOD_DIR/assets/icon}"
-THRASH_MACHINE_WINDOW_ICON="${THRASH_MACHINE_WINDOW_ICON:-$THRASH_MACHINE_ICON_DIR/window_icon.png}"
-THRASH_MACHINE_WIN_ICON_DIR="${THRASH_MACHINE_WIN_ICON_DIR:-$THRASH_MACHINE_ICON_DIR/win}"
-THRASH_MACHINE_RCEDit="${THRASH_MACHINE_RCEDit:-}"          # empty → probe $THRASH_MACHINE_TOOLS_DIR/rcedit/ and PATH
-THRASH_MACHINE_ICON_FETCH_TOOLS="${THRASH_MACHINE_ICON_FETCH_TOOLS:-0}"  # 1 = auto-download rcedit
-THRASH_MACHINE_RCEDit_URL="${THRASH_MACHINE_RCEDit_URL:-https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe}"
+SPIN_CHARA_ICON_DIR="${SPIN_CHARA_ICON_DIR:-$SPIN_CHARA_MOD_DIR/assets/icon}"
+SPIN_CHARA_WINDOW_ICON="${SPIN_CHARA_WINDOW_ICON:-$SPIN_CHARA_ICON_DIR/window_icon.png}"
+SPIN_CHARA_WIN_ICON_DIR="${SPIN_CHARA_WIN_ICON_DIR:-$SPIN_CHARA_ICON_DIR/win}"
+SPIN_CHARA_RCEDit="${SPIN_CHARA_RCEDit:-}"          # empty → probe $SPIN_CHARA_TOOLS_DIR/rcedit/ and PATH
+SPIN_CHARA_ICON_FETCH_TOOLS="${SPIN_CHARA_ICON_FETCH_TOOLS:-0}"  # 1 = auto-download rcedit
+SPIN_CHARA_RCEDit_URL="${SPIN_CHARA_RCEDit_URL:-https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe}"
 # wine prefix lives OUTSIDE the mod tree: wine creates a `z: -> /` symlink
 # under it, and LÖVE recursively scans the mod root at runtime — a loop
 # there makes getInfo return nil and crashes the game at startup.
-THRASH_MACHINE_WINE_PREFIX="${THRASH_MACHINE_WINE_PREFIX:-${XDG_CACHE_HOME:-$HOME/.cache}/thrash-machine/wine}"
+SPIN_CHARA_WINE_PREFIX="${SPIN_CHARA_WINE_PREFIX:-${XDG_CACHE_HOME:-$HOME/.cache}/spin-chara/wine}"
 
 log() {
     printf '[build] %s\n' "$*" >&2
@@ -67,18 +67,18 @@ fail() {
 # behind — that reads as "only the release .love was built" when the real
 # situation is that the variant never finished. Cleanup keys off a completion
 # flag, not $?, because $? is unreliable inside signal traps.
-THRASH_MACHINE_CURRENT_VARIANT=""
-THRASH_MACHINE_BUILD_FINISHED=0
+SPIN_CHARA_CURRENT_VARIANT=""
+SPIN_CHARA_BUILD_FINISHED=0
 cleanup_partial_build() {
     local status=$?
-    if [ "$THRASH_MACHINE_BUILD_FINISHED" -ne 1 ] && [ -n "$THRASH_MACHINE_CURRENT_VARIANT" ]; then
-        local stem="$THRASH_MACHINE_OUTPUT_DIR/${THRASH_MACHINE_OUTPUT_BASENAME}-${THRASH_MACHINE_CURRENT_VARIANT}"
-        if [ -e "$stem.love" ] || [ -e "$stem-${THRASH_MACHINE_LOVE_ARCH}.zip" ] \
-            || [ -d "$stem-${THRASH_MACHINE_LOVE_ARCH}" ]; then
+    if [ "$SPIN_CHARA_BUILD_FINISHED" -ne 1 ] && [ -n "$SPIN_CHARA_CURRENT_VARIANT" ]; then
+        local stem="$SPIN_CHARA_OUTPUT_DIR/${SPIN_CHARA_OUTPUT_BASENAME}-${SPIN_CHARA_CURRENT_VARIANT}"
+        if [ -e "$stem.love" ] || [ -e "$stem-${SPIN_CHARA_LOVE_ARCH}.zip" ] \
+            || [ -d "$stem-${SPIN_CHARA_LOVE_ARCH}" ]; then
             printf '[错误] 变体 %s 构建失败/中断，已移除 dist 中未完成的部分输出\n' \
-                "$THRASH_MACHINE_CURRENT_VARIANT" >&2
-            rm -f "$stem.love" "$stem-${THRASH_MACHINE_LOVE_ARCH}.zip"
-            rm -rf "$stem-${THRASH_MACHINE_LOVE_ARCH}"
+                "$SPIN_CHARA_CURRENT_VARIANT" >&2
+            rm -f "$stem.love" "$stem-${SPIN_CHARA_LOVE_ARCH}.zip"
+            rm -rf "$stem-${SPIN_CHARA_LOVE_ARCH}"
         fi
     fi
     exit "$status"
@@ -100,33 +100,33 @@ is_windows_host() {
     esac
 }
 
-# Resolve the rcedit binary: 1) THRASH_MACHINE_RCEDit 2) $THRASH_MACHINE_TOOLS_DIR/rcedit/
+# Resolve the rcedit binary: 1) SPIN_CHARA_RCEDit 2) $SPIN_CHARA_TOOLS_DIR/rcedit/
 # 3) rcedit on PATH. Returns the path or exits 1.
 resolve_rcedit() {
-    local bin="${THRASH_MACHINE_RCEDit:-}"
+    local bin="${SPIN_CHARA_RCEDit:-}"
     if [ -n "$bin" ]; then
         [ -f "$bin" ] && { printf '%s\n' "$bin"; return 0; }
         command -v "$bin" >/dev/null 2>&1 && { command -v "$bin"; return 0; }
         return 1
     fi
-    if [ -f "$THRASH_MACHINE_TOOLS_DIR/rcedit/rcedit-x64.exe" ]; then
-        printf '%s\n' "$THRASH_MACHINE_TOOLS_DIR/rcedit/rcedit-x64.exe"
+    if [ -f "$SPIN_CHARA_TOOLS_DIR/rcedit/rcedit-x64.exe" ]; then
+        printf '%s\n' "$SPIN_CHARA_TOOLS_DIR/rcedit/rcedit-x64.exe"
         return 0
     fi
     command -v rcedit >/dev/null 2>&1 && { command -v rcedit; return 0; }
     return 1
 }
 
-# Auto-download rcedit into $THRASH_MACHINE_TOOLS_DIR/rcedit/ (gated by
-# THRASH_MACHINE_ICON_FETCH_TOOLS=1).
+# Auto-download rcedit into $SPIN_CHARA_TOOLS_DIR/rcedit/ (gated by
+# SPIN_CHARA_ICON_FETCH_TOOLS=1).
 fetch_rcedit() {
-    local dest="$THRASH_MACHINE_TOOLS_DIR/rcedit/rcedit-x64.exe"
+    local dest="$SPIN_CHARA_TOOLS_DIR/rcedit/rcedit-x64.exe"
     [ -f "$dest" ] && { printf '%s\n' "$dest"; return 0; }
-    [ "$THRASH_MACHINE_ICON_FETCH_TOOLS" = "1" ] || return 1
+    [ "$SPIN_CHARA_ICON_FETCH_TOOLS" = "1" ] || return 1
     command -v curl >/dev/null 2>&1 || return 1
     log "下载 rcedit（用于 Windows exe 图标）"
     mkdir -p "$(dirname "$dest")"
-    curl --fail --location --output "$dest" "$THRASH_MACHINE_RCEDit_URL" || {
+    curl --fail --location --output "$dest" "$SPIN_CHARA_RCEDit_URL" || {
         rm -f "$dest"
         warn "下载 rcedit 失败，跳过 exe 图标注入"
         return 1
@@ -142,11 +142,11 @@ resolve_win_ico() {
     # Always create the output dir: build_variant copies love.exe into
     # $out_dir/love-icon.exe whether the .ico is ready-made or combined here.
     mkdir -p "$out_dir"
-    if [ -f "$THRASH_MACHINE_WIN_ICON_DIR/icon.ico" ]; then
-        printf '%s\n' "$THRASH_MACHINE_WIN_ICON_DIR/icon.ico"
+    if [ -f "$SPIN_CHARA_WIN_ICON_DIR/icon.ico" ]; then
+        printf '%s\n' "$SPIN_CHARA_WIN_ICON_DIR/icon.ico"
         return 0
     fi
-    for png in "$THRASH_MACHINE_WIN_ICON_DIR"/[0-9]*x[0-9]*.png; do
+    for png in "$SPIN_CHARA_WIN_ICON_DIR"/[0-9]*x[0-9]*.png; do
         [ -f "$png" ] && pngs+=("$png")
     done
     [ "${#pngs[@]}" -eq 0 ] && return 1
@@ -188,7 +188,7 @@ inject_exe_icon() {
         # (/c/Users/...); convert them or it fails with "invalid argument".
         "$rcedit" "$(win_path "$exe")" --set-icon "$(win_path "$ico")" || return 1
     else
-        WINEPREFIX="$THRASH_MACHINE_WINE_PREFIX" WINEDEBUG=-all \
+        WINEPREFIX="$SPIN_CHARA_WINE_PREFIX" WINEDEBUG=-all \
             wine "$rcedit" "$exe" --set-icon "$ico"
     fi
     # wine can mask a failed rcedit with exit 0; a no-op means the icon was
@@ -203,8 +203,8 @@ inject_exe_icon() {
 # convention-located source there and explicitly enable setWindowTitleAndIcon.
 stage_window_icon() {
     local stage_mod="$1"
-    if [ -f "$THRASH_MACHINE_WINDOW_ICON" ]; then
-        cp "$THRASH_MACHINE_WINDOW_ICON" "$stage_mod/window_icon.png"
+    if [ -f "$SPIN_CHARA_WINDOW_ICON" ]; then
+        cp "$SPIN_CHARA_WINDOW_ICON" "$stage_mod/window_icon.png"
         run_helper set-mod-json-flag "$stage_mod/mod.json" setWindowTitleAndIcon true
         log "已暂存 window_icon.png 并置 setWindowTitleAndIcon=true"
     fi
@@ -216,7 +216,7 @@ detect_kristal_path() {
     # local-first — walk up from the mod root for the nearest engine, so a mod
     # sitting inside its own engine fork (e.g. el-mods/ inside kristal-el) is
     # authoritative even when KRISTAL_ROOT is inherited from the shell profile.
-    dir="$THRASH_MACHINE_MOD_DIR"
+    dir="$SPIN_CHARA_MOD_DIR"
     while :; do
         if [ -f "$dir/main.lua" ] && [ -f "$dir/src/kristal.lua" ]; then
             printf '%s\n' "$dir"
@@ -228,7 +228,7 @@ detect_kristal_path() {
     done
     # Explicit env vars are only a fallback for mods outside an engine tree.
     local candidates=()
-    [ -n "$THRASH_MACHINE_KRISTAL_DIR_ENV" ] && candidates+=("$THRASH_MACHINE_KRISTAL_DIR_ENV")
+    [ -n "$SPIN_CHARA_KRISTAL_DIR_ENV" ] && candidates+=("$SPIN_CHARA_KRISTAL_DIR_ENV")
     [ -n "$KRISTAL_ROOT_ENV" ] && candidates+=("$KRISTAL_ROOT_ENV")
     for candidate in "${candidates[@]}"; do
         [ -n "$candidate" ] || continue
@@ -238,9 +238,9 @@ detect_kristal_path() {
         fi
     done
     candidates+=(
-        "$THRASH_MACHINE_MOD_DIR/.build/Kristal"
-        "$THRASH_MACHINE_MOD_DIR/../Kristal"
-        "$THRASH_MACHINE_MOD_DIR/../kristal"
+        "$SPIN_CHARA_MOD_DIR/.build/Kristal"
+        "$SPIN_CHARA_MOD_DIR/../Kristal"
+        "$SPIN_CHARA_MOD_DIR/../kristal"
         "$HOME/Kristal"
         "$HOME/kristal"
     )
@@ -259,15 +259,15 @@ choose_kristal_tag() {
 
     while IFS= read -r tag; do
         tags+=("$tag")
-    done < <(git ls-remote --tags --refs "$THRASH_MACHINE_KRISTAL_REPO" \
+    done < <(git ls-remote --tags --refs "$SPIN_CHARA_KRISTAL_REPO" \
         | sed -n 's#.*refs/tags/##p' | sort -V)
 
     if [ "${#tags[@]}" -eq 0 ]; then
-        printf 'Could not list tags from %s\n' "$THRASH_MACHINE_KRISTAL_REPO" >&2
+        printf 'Could not list tags from %s\n' "$SPIN_CHARA_KRISTAL_REPO" >&2
         return 1
     fi
 
-    default_tag="${THRASH_MACHINE_KRISTAL_REF_ENV:-}"
+    default_tag="${SPIN_CHARA_KRISTAL_REF_ENV:-}"
     found=0
     for tag in "${tags[@]}"; do
         if [ "$tag" = "$default_tag" ]; then
@@ -291,7 +291,7 @@ choose_kristal_tag() {
         *[!0-9]*)
             for tag in "${tags[@]}"; do
                 if [ "$tag" = "$answer" ]; then
-                    THRASH_MACHINE_KRISTAL_REF="$tag"
+                    SPIN_CHARA_KRISTAL_REF="$tag"
                     return 0
                 fi
             done
@@ -300,7 +300,7 @@ choose_kristal_tag() {
             ;;
         *)
             if [ "$answer" -ge 1 ] && [ "$answer" -le "${#tags[@]}" ]; then
-                THRASH_MACHINE_KRISTAL_REF="${tags[$((answer - 1))]}"
+                SPIN_CHARA_KRISTAL_REF="${tags[$((answer - 1))]}"
                 return 0
             fi
             printf 'Invalid tag number: %s\n' "$answer" >&2
@@ -329,17 +329,17 @@ choose_kristal_commit() {
         printf 'Commit hash 需要完整 40 位。\n' >&2
         return 1
     fi
-    THRASH_MACHINE_KRISTAL_REF="$hash"
+    SPIN_CHARA_KRISTAL_REF="$hash"
 }
 
 choose_kristal_branch() {
     local branches=() branch answer default_branch found i
 
-    default_branch="${THRASH_MACHINE_KRISTAL_REF_ENV:-main}"
+    default_branch="${SPIN_CHARA_KRISTAL_REF_ENV:-main}"
 
     while IFS= read -r branch; do
         branches+=("$branch")
-    done < <(git ls-remote --heads "$THRASH_MACHINE_KRISTAL_REPO" \
+    done < <(git ls-remote --heads "$SPIN_CHARA_KRISTAL_REPO" \
         | sed -n 's#.*refs/heads/##p' | sort)
 
     found=0
@@ -367,17 +367,17 @@ choose_kristal_branch() {
 
     case "$answer" in
         *[!0-9]*)
-            THRASH_MACHINE_KRISTAL_REF="$answer"
+            SPIN_CHARA_KRISTAL_REF="$answer"
             ;;
         *)
             if [ "$answer" -ge 1 ] && [ "$answer" -le "${#branches[@]}" ]; then
-                THRASH_MACHINE_KRISTAL_REF="${branches[$((answer - 1))]}"
+                SPIN_CHARA_KRISTAL_REF="${branches[$((answer - 1))]}"
             else
-                THRASH_MACHINE_KRISTAL_REF="$answer"
+                SPIN_CHARA_KRISTAL_REF="$answer"
             fi
             ;;
     esac
-    [ -n "$THRASH_MACHINE_KRISTAL_REF" ] || THRASH_MACHINE_KRISTAL_REF="$default_branch"
+    [ -n "$SPIN_CHARA_KRISTAL_REF" ] || SPIN_CHARA_KRISTAL_REF="$default_branch"
 }
 
 choose_kristal_source() {
@@ -410,10 +410,10 @@ choose_kristal_source() {
                     printf '没有找到可用的本地 Kristal。\n' >&2
                     continue
                 fi
-                THRASH_MACHINE_KRISTAL_SOURCE=local
-                THRASH_MACHINE_KRISTAL_DIR="$local_path"
-                if [ -z "$THRASH_MACHINE_KRISTAL_REF_ENV" ]; then
-                    THRASH_MACHINE_KRISTAL_REF=HEAD
+                SPIN_CHARA_KRISTAL_SOURCE=local
+                SPIN_CHARA_KRISTAL_DIR="$local_path"
+                if [ -z "$SPIN_CHARA_KRISTAL_REF_ENV" ]; then
+                    SPIN_CHARA_KRISTAL_REF=HEAD
                 fi
                 ;;
             2)
@@ -437,26 +437,26 @@ choose_kristal_source() {
                     printf '路径不是有效的 Kristal 目录（缺少 main.lua）: %s\n' "$custom_path" >&2
                     continue
                 fi
-                THRASH_MACHINE_KRISTAL_SOURCE=path
-                THRASH_MACHINE_KRISTAL_DIR="$custom_path"
-                if [ -z "$THRASH_MACHINE_KRISTAL_REF_ENV" ]; then
-                    THRASH_MACHINE_KRISTAL_REF=HEAD
+                SPIN_CHARA_KRISTAL_SOURCE=path
+                SPIN_CHARA_KRISTAL_DIR="$custom_path"
+                if [ -z "$SPIN_CHARA_KRISTAL_REF_ENV" ]; then
+                    SPIN_CHARA_KRISTAL_REF=HEAD
                 fi
                 ;;
             3)
-                THRASH_MACHINE_KRISTAL_SOURCE=tag
+                SPIN_CHARA_KRISTAL_SOURCE=tag
                 if ! choose_kristal_tag; then
                     continue
                 fi
                 ;;
             4)
-                THRASH_MACHINE_KRISTAL_SOURCE=commit
+                SPIN_CHARA_KRISTAL_SOURCE=commit
                 if ! choose_kristal_commit; then
                     continue
                 fi
                 ;;
             5)
-                THRASH_MACHINE_KRISTAL_SOURCE=branch
+                SPIN_CHARA_KRISTAL_SOURCE=branch
                 if ! choose_kristal_branch; then
                     continue
                 fi
@@ -469,53 +469,53 @@ choose_kristal_source() {
         break
     done
 
-    if [ -z "$THRASH_MACHINE_KRISTAL_EXPECTED_VERSION_ENV" ] \
-        && [ -z "$THRASH_MACHINE_KRISTAL_VERIFY_VERSION_ENV" ]; then
-        case "$THRASH_MACHINE_KRISTAL_SOURCE:$THRASH_MACHINE_KRISTAL_REF" in
-            commit:f62afea63ccab02f468c24ac0d096bd8a2c9aa81) THRASH_MACHINE_KRISTAL_VERIFY_VERSION=1 ;;
-            *) THRASH_MACHINE_KRISTAL_VERIFY_VERSION=0 ;;
+    if [ -z "$SPIN_CHARA_KRISTAL_EXPECTED_VERSION_ENV" ] \
+        && [ -z "$SPIN_CHARA_KRISTAL_VERIFY_VERSION_ENV" ]; then
+        case "$SPIN_CHARA_KRISTAL_SOURCE:$SPIN_CHARA_KRISTAL_REF" in
+            commit:f62afea63ccab02f468c24ac0d096bd8a2c9aa81) SPIN_CHARA_KRISTAL_VERIFY_VERSION=1 ;;
+            *) SPIN_CHARA_KRISTAL_VERIFY_VERSION=0 ;;
         esac
     fi
 }
 
 resolve_kristal_source() {
-    if [ "$THRASH_MACHINE_KRISTAL_SOURCE" = "ask" ]; then
-        THRASH_MACHINE_KRISTAL_SOURCE=""
+    if [ "$SPIN_CHARA_KRISTAL_SOURCE" = "ask" ]; then
+        SPIN_CHARA_KRISTAL_SOURCE=""
         choose_kristal_source
         return 0
     fi
 
-    if [ -n "$THRASH_MACHINE_KRISTAL_SOURCE" ]; then
-        case "$THRASH_MACHINE_KRISTAL_SOURCE" in
+    if [ -n "$SPIN_CHARA_KRISTAL_SOURCE" ]; then
+        case "$SPIN_CHARA_KRISTAL_SOURCE" in
             local|path)
-                if [ -z "$THRASH_MACHINE_KRISTAL_REF_ENV" ]; then
-                    THRASH_MACHINE_KRISTAL_REF=HEAD
+                if [ -z "$SPIN_CHARA_KRISTAL_REF_ENV" ]; then
+                    SPIN_CHARA_KRISTAL_REF=HEAD
                 fi
                 ;;
             commit)
-                case "$THRASH_MACHINE_KRISTAL_REF" in
+                case "$SPIN_CHARA_KRISTAL_REF" in
                     ''|*[!0-9a-fA-F]*)
-                        fail "THRASH_MACHINE_KRISTAL_SOURCE=commit requires a 40-hex THRASH_MACHINE_KRISTAL_REF"
+                        fail "SPIN_CHARA_KRISTAL_SOURCE=commit requires a 40-hex SPIN_CHARA_KRISTAL_REF"
                         ;;
                 esac
-                if [ "${#THRASH_MACHINE_KRISTAL_REF}" -ne 40 ]; then
-                    fail "THRASH_MACHINE_KRISTAL_SOURCE=commit requires a 40-hex THRASH_MACHINE_KRISTAL_REF"
+                if [ "${#SPIN_CHARA_KRISTAL_REF}" -ne 40 ]; then
+                    fail "SPIN_CHARA_KRISTAL_SOURCE=commit requires a 40-hex SPIN_CHARA_KRISTAL_REF"
                 fi
                 ;;
             tag)
-                [ -n "$THRASH_MACHINE_KRISTAL_REF" ] \
-                    || fail "THRASH_MACHINE_KRISTAL_SOURCE=tag requires THRASH_MACHINE_KRISTAL_REF"
+                [ -n "$SPIN_CHARA_KRISTAL_REF" ] \
+                    || fail "SPIN_CHARA_KRISTAL_SOURCE=tag requires SPIN_CHARA_KRISTAL_REF"
                 ;;
             branch)
-                [ -n "$THRASH_MACHINE_KRISTAL_REF" ] \
-                    || fail "THRASH_MACHINE_KRISTAL_SOURCE=branch requires THRASH_MACHINE_KRISTAL_REF"
+                [ -n "$SPIN_CHARA_KRISTAL_REF" ] \
+                    || fail "SPIN_CHARA_KRISTAL_SOURCE=branch requires SPIN_CHARA_KRISTAL_REF"
                 ;;
         esac
-        if [ -z "$THRASH_MACHINE_KRISTAL_EXPECTED_VERSION_ENV" ] \
-            && [ -z "$THRASH_MACHINE_KRISTAL_VERIFY_VERSION_ENV" ]; then
-            case "$THRASH_MACHINE_KRISTAL_SOURCE:$THRASH_MACHINE_KRISTAL_REF" in
-                commit:f62afea63ccab02f468c24ac0d096bd8a2c9aa81) THRASH_MACHINE_KRISTAL_VERIFY_VERSION=1 ;;
-                *) THRASH_MACHINE_KRISTAL_VERIFY_VERSION=0 ;;
+        if [ -z "$SPIN_CHARA_KRISTAL_EXPECTED_VERSION_ENV" ] \
+            && [ -z "$SPIN_CHARA_KRISTAL_VERIFY_VERSION_ENV" ]; then
+            case "$SPIN_CHARA_KRISTAL_SOURCE:$SPIN_CHARA_KRISTAL_REF" in
+                commit:f62afea63ccab02f468c24ac0d096bd8a2c9aa81) SPIN_CHARA_KRISTAL_VERIFY_VERSION=1 ;;
+                *) SPIN_CHARA_KRISTAL_VERIFY_VERSION=0 ;;
             esac
         fi
         return 0
@@ -523,30 +523,30 @@ resolve_kristal_source() {
 
     # Explicit paths and refs retain their inferred source type. With no
     # override, both interactive and CI builds use the pinned commit below.
-    if [ -n "$THRASH_MACHINE_KRISTAL_REF_ENV" ] \
-        && [ "$THRASH_MACHINE_KRISTAL_REF_ENV" != "f62afea63ccab02f468c24ac0d096bd8a2c9aa81" ]; then
-        case "$THRASH_MACHINE_KRISTAL_REF_ENV" in
+    if [ -n "$SPIN_CHARA_KRISTAL_REF_ENV" ] \
+        && [ "$SPIN_CHARA_KRISTAL_REF_ENV" != "f62afea63ccab02f468c24ac0d096bd8a2c9aa81" ]; then
+        case "$SPIN_CHARA_KRISTAL_REF_ENV" in
             *[!0-9a-fA-F]*)
-                THRASH_MACHINE_KRISTAL_SOURCE=tag
+                SPIN_CHARA_KRISTAL_SOURCE=tag
                 ;;
             *)
-                THRASH_MACHINE_KRISTAL_SOURCE=commit
+                SPIN_CHARA_KRISTAL_SOURCE=commit
                 ;;
         esac
-    elif [ -n "$THRASH_MACHINE_KRISTAL_DIR_ENV" ] || [ -n "$KRISTAL_ROOT_ENV" ]; then
-        THRASH_MACHINE_KRISTAL_SOURCE=local
-        if [ -z "$THRASH_MACHINE_KRISTAL_REF_ENV" ]; then
-            THRASH_MACHINE_KRISTAL_REF=HEAD
+    elif [ -n "$SPIN_CHARA_KRISTAL_DIR_ENV" ] || [ -n "$KRISTAL_ROOT_ENV" ]; then
+        SPIN_CHARA_KRISTAL_SOURCE=local
+        if [ -z "$SPIN_CHARA_KRISTAL_REF_ENV" ]; then
+            SPIN_CHARA_KRISTAL_REF=HEAD
         fi
     else
-        THRASH_MACHINE_KRISTAL_SOURCE=commit
+        SPIN_CHARA_KRISTAL_SOURCE=commit
     fi
 
-    if [ -z "$THRASH_MACHINE_KRISTAL_EXPECTED_VERSION_ENV" ] \
-        && [ -z "$THRASH_MACHINE_KRISTAL_VERIFY_VERSION_ENV" ]; then
-        case "$THRASH_MACHINE_KRISTAL_SOURCE:$THRASH_MACHINE_KRISTAL_REF" in
-            commit:f62afea63ccab02f468c24ac0d096bd8a2c9aa81) THRASH_MACHINE_KRISTAL_VERIFY_VERSION=1 ;;
-            *) THRASH_MACHINE_KRISTAL_VERIFY_VERSION=0 ;;
+    if [ -z "$SPIN_CHARA_KRISTAL_EXPECTED_VERSION_ENV" ] \
+        && [ -z "$SPIN_CHARA_KRISTAL_VERIFY_VERSION_ENV" ]; then
+        case "$SPIN_CHARA_KRISTAL_SOURCE:$SPIN_CHARA_KRISTAL_REF" in
+            commit:f62afea63ccab02f468c24ac0d096bd8a2c9aa81) SPIN_CHARA_KRISTAL_VERIFY_VERSION=1 ;;
+            *) SPIN_CHARA_KRISTAL_VERIFY_VERSION=0 ;;
         esac
     fi
 }
@@ -557,9 +557,9 @@ fetch_kristal_ref() {
     remote="$(git -C "$dir" remote | head -n 1)"
     [ -n "$remote" ] || fail "No Git remote configured in $dir"
 
-    if [ "$THRASH_MACHINE_KRISTAL_SOURCE" = "tag" ]; then
+    if [ "$SPIN_CHARA_KRISTAL_SOURCE" = "tag" ]; then
         git -C "$dir" fetch --depth 1 "$remote" "refs/tags/${ref}:refs/tags/${ref}"
-    elif [ "$THRASH_MACHINE_KRISTAL_SOURCE" = "branch" ]; then
+    elif [ "$SPIN_CHARA_KRISTAL_SOURCE" = "branch" ]; then
         # Mirror the branch tip into a local branch of the same name so every
         # later use of $ref (checkout --detach / git show / git archive) resolves.
         # The '+' force-prefix is required: on a shallow --depth 1 fetch the new
@@ -573,17 +573,17 @@ fetch_kristal_ref() {
 }
 
 ensure_kristal() {
-    local dir="$THRASH_MACHINE_KRISTAL_DIR"
+    local dir="$SPIN_CHARA_KRISTAL_DIR"
 
-    case "$THRASH_MACHINE_KRISTAL_SOURCE" in
+    case "$SPIN_CHARA_KRISTAL_SOURCE" in
         local|path)
             [ -d "$dir" ] || fail "Kristal local path does not exist: $dir"
             [ -f "$dir/main.lua" ] || fail "Kristal local path is missing main.lua: $dir"
             if git -C "$dir" rev-parse --git-dir >/dev/null 2>&1; then
-                THRASH_MACHINE_KRISTAL_IS_GIT=1
-                git -C "$dir" rev-parse --verify --quiet "${THRASH_MACHINE_KRISTAL_REF}^{commit}" >/dev/null \
-                    || fail "Local Kristal checkout does not contain ${THRASH_MACHINE_KRISTAL_REF}: $dir"
-                if [ "$THRASH_MACHINE_UPDATE_REPOS" = "1" ]; then
+                SPIN_CHARA_KRISTAL_IS_GIT=1
+                git -C "$dir" rev-parse --verify --quiet "${SPIN_CHARA_KRISTAL_REF}^{commit}" >/dev/null \
+                    || fail "Local Kristal checkout does not contain ${SPIN_CHARA_KRISTAL_REF}: $dir"
+                if [ "$SPIN_CHARA_UPDATE_REPOS" = "1" ]; then
                     local remote
                     remote="$(git -C "$dir" remote | head -n 1)"
                     if [ -n "$remote" ]; then
@@ -591,71 +591,71 @@ ensure_kristal() {
                     fi
                 fi
             else
-                THRASH_MACHINE_KRISTAL_IS_GIT=0
+                SPIN_CHARA_KRISTAL_IS_GIT=0
             fi
             ;;
         tag|commit|branch)
             if git -C "$dir" rev-parse --git-dir >/dev/null 2>&1; then
-                THRASH_MACHINE_KRISTAL_IS_GIT=1
-                if [ "$THRASH_MACHINE_UPDATE_REPOS" = "1" ]; then
+                SPIN_CHARA_KRISTAL_IS_GIT=1
+                if [ "$SPIN_CHARA_UPDATE_REPOS" = "1" ]; then
                     local remote
                     remote="$(git -C "$dir" remote | head -n 1)"
                     if [ -n "$remote" ]; then
                         git -C "$dir" fetch --depth 1 --tags "$remote"
                     fi
                 fi
-                if [ "$THRASH_MACHINE_KRISTAL_SOURCE" = "branch" ]; then
+                if [ "$SPIN_CHARA_KRISTAL_SOURCE" = "branch" ]; then
                     # A branch means "latest commit": always refresh the tip so a
                     # cached checkout never silently serves an older commit.
-                    fetch_kristal_ref "$dir" "$THRASH_MACHINE_KRISTAL_REF"
-                elif ! git -C "$dir" rev-parse --verify --quiet "${THRASH_MACHINE_KRISTAL_REF}^{commit}" >/dev/null; then
-                    fetch_kristal_ref "$dir" "$THRASH_MACHINE_KRISTAL_REF"
+                    fetch_kristal_ref "$dir" "$SPIN_CHARA_KRISTAL_REF"
+                elif ! git -C "$dir" rev-parse --verify --quiet "${SPIN_CHARA_KRISTAL_REF}^{commit}" >/dev/null; then
+                    fetch_kristal_ref "$dir" "$SPIN_CHARA_KRISTAL_REF"
                 fi
-                git -C "$dir" -c advice.detachedHead=false checkout --detach "$THRASH_MACHINE_KRISTAL_REF" >/dev/null
+                git -C "$dir" -c advice.detachedHead=false checkout --detach "$SPIN_CHARA_KRISTAL_REF" >/dev/null
             elif [ -e "$dir" ]; then
                 fail "Kristal path exists but is not a Git checkout: $dir"
             else
-                THRASH_MACHINE_KRISTAL_IS_GIT=1
+                SPIN_CHARA_KRISTAL_IS_GIT=1
                 mkdir -p "$(dirname "$dir")"
-                if [ "$THRASH_MACHINE_KRISTAL_SOURCE" = "tag" ]; then
-                    log "Shallow-cloning Kristal tag ${THRASH_MACHINE_KRISTAL_REF} from $THRASH_MACHINE_KRISTAL_REPO"
-                    git -c advice.detachedHead=false clone --depth 1 --branch "$THRASH_MACHINE_KRISTAL_REF" --single-branch \
-                        "$THRASH_MACHINE_KRISTAL_REPO" "$dir"
+                if [ "$SPIN_CHARA_KRISTAL_SOURCE" = "tag" ]; then
+                    log "Shallow-cloning Kristal tag ${SPIN_CHARA_KRISTAL_REF} from $SPIN_CHARA_KRISTAL_REPO"
+                    git -c advice.detachedHead=false clone --depth 1 --branch "$SPIN_CHARA_KRISTAL_REF" --single-branch \
+                        "$SPIN_CHARA_KRISTAL_REPO" "$dir"
                 else
-                    if [ "$THRASH_MACHINE_KRISTAL_SOURCE" = "branch" ]; then
-                        log "Shallow-fetching Kristal branch ${THRASH_MACHINE_KRISTAL_REF} from $THRASH_MACHINE_KRISTAL_REPO"
+                    if [ "$SPIN_CHARA_KRISTAL_SOURCE" = "branch" ]; then
+                        log "Shallow-fetching Kristal branch ${SPIN_CHARA_KRISTAL_REF} from $SPIN_CHARA_KRISTAL_REPO"
                     else
-                        log "Shallow-fetching Kristal commit ${THRASH_MACHINE_KRISTAL_REF} from $THRASH_MACHINE_KRISTAL_REPO"
+                        log "Shallow-fetching Kristal commit ${SPIN_CHARA_KRISTAL_REF} from $SPIN_CHARA_KRISTAL_REPO"
                     fi
                     git init -q "$dir"
-                    git -C "$dir" remote add origin "$THRASH_MACHINE_KRISTAL_REPO"
-                    fetch_kristal_ref "$dir" "$THRASH_MACHINE_KRISTAL_REF"
+                    git -C "$dir" remote add origin "$SPIN_CHARA_KRISTAL_REPO"
+                    fetch_kristal_ref "$dir" "$SPIN_CHARA_KRISTAL_REF"
                 fi
-                if ! git -C "$dir" -c advice.detachedHead=false checkout --detach "$THRASH_MACHINE_KRISTAL_REF" >/dev/null 2>&1; then
+                if ! git -C "$dir" -c advice.detachedHead=false checkout --detach "$SPIN_CHARA_KRISTAL_REF" >/dev/null 2>&1; then
                     git -C "$dir" -c advice.detachedHead=false checkout --detach HEAD >/dev/null
-                    THRASH_MACHINE_KRISTAL_REF=HEAD
+                    SPIN_CHARA_KRISTAL_REF=HEAD
                 fi
             fi
             ;;
         *)
-            fail "Unknown Kristal source: ${THRASH_MACHINE_KRISTAL_SOURCE:-<empty>}"
+            fail "Unknown Kristal source: ${SPIN_CHARA_KRISTAL_SOURCE:-<empty>}"
             ;;
     esac
 
-    if [ "$THRASH_MACHINE_KRISTAL_IS_GIT" = "1" ]; then
-        version="$(git -C "$dir" show "${THRASH_MACHINE_KRISTAL_REF}:VERSION" | tr -d '\r\n')"
+    if [ "$SPIN_CHARA_KRISTAL_IS_GIT" = "1" ]; then
+        version="$(git -C "$dir" show "${SPIN_CHARA_KRISTAL_REF}:VERSION" | tr -d '\r\n')"
     elif [ -f "$dir/VERSION" ]; then
         version="$(sed -n '1p' "$dir/VERSION" | tr -d '\r\n')"
     else
         version=""
     fi
 
-    if [ "$THRASH_MACHINE_KRISTAL_VERIFY_VERSION" = "1" ]; then
-        if [ "$version" != "$THRASH_MACHINE_KRISTAL_EXPECTED_VERSION" ]; then
-            fail "Kristal ${THRASH_MACHINE_KRISTAL_REF} reports VERSION=$version, expected $THRASH_MACHINE_KRISTAL_EXPECTED_VERSION"
+    if [ "$SPIN_CHARA_KRISTAL_VERIFY_VERSION" = "1" ]; then
+        if [ "$version" != "$SPIN_CHARA_KRISTAL_EXPECTED_VERSION" ]; then
+            fail "Kristal ${SPIN_CHARA_KRISTAL_REF} reports VERSION=$version, expected $SPIN_CHARA_KRISTAL_EXPECTED_VERSION"
         fi
     else
-        log "Using Kristal VERSION=$version (${THRASH_MACHINE_KRISTAL_REF:+ref ${THRASH_MACHINE_KRISTAL_REF}})"
+        log "Using Kristal VERSION=$version (${SPIN_CHARA_KRISTAL_REF:+ref ${SPIN_CHARA_KRISTAL_REF}})"
     fi
 }
 
@@ -663,8 +663,8 @@ export_kristal() {
     stage_dir="$1"
     rm -rf "$stage_dir"
     mkdir -p "$stage_dir"
-    if [ "$THRASH_MACHINE_KRISTAL_IS_GIT" = "1" ]; then
-        git -C "$THRASH_MACHINE_KRISTAL_DIR" archive --format=tar "$THRASH_MACHINE_KRISTAL_REF" \
+    if [ "$SPIN_CHARA_KRISTAL_IS_GIT" = "1" ]; then
+        git -C "$SPIN_CHARA_KRISTAL_DIR" archive --format=tar "$SPIN_CHARA_KRISTAL_REF" \
             | tar -x -C "$stage_dir"
     else
         # Exclude mods/: a mod sitting inside the engine's mods/ folder (the
@@ -681,7 +681,7 @@ export_kristal() {
         # The git path above never sees these (untracked); the tar fallback must
         # drop them explicitly. .build/ is defensive (never ship build artifacts).
         tar -cf - --exclude='./.git' --exclude='./mods' --exclude='./.tools' \
-            --exclude='./.build' -C "$THRASH_MACHINE_KRISTAL_DIR" . \
+            --exclude='./.build' -C "$SPIN_CHARA_KRISTAL_DIR" . \
             | tar -xf - -C "$stage_dir"
     fi
     rm -rf "$stage_dir/.github" "$stage_dir/mods" "$stage_dir/build" "$stage_dir/output"
@@ -730,7 +730,7 @@ copy_mod() {
         --exclude='./libraries/kristal-debug-tools/dist' \
         --exclude='./libraries/kristal-debug-tools/.tools' \
         --exclude='./assets/icon' \
-        -C "$THRASH_MACHINE_MOD_DIR" . | tar -xf - -C "$stage_mod"
+        -C "$SPIN_CHARA_MOD_DIR" . | tar -xf - -C "$stage_mod"
 
     if [ "$variant" = "release" ]; then
         # The helper owns release stripping by library ID. Debug packages
@@ -757,21 +757,21 @@ prepare_stage() {
             ;;
     esac
 
-    stage_dir="$THRASH_MACHINE_BUILD_ROOT/$variant/source"
+    stage_dir="$SPIN_CHARA_BUILD_ROOT/$variant/source"
     export_kristal "$stage_dir"
-    stage_mod="$stage_dir/mods/$THRASH_MACHINE_MOD_ID"
+    stage_mod="$stage_dir/mods/$SPIN_CHARA_MOD_ID"
     copy_mod "$stage_mod" "$variant"
     if [ "$variant" = "release" ]; then
-        identity="$THRASH_MACHINE_MOD_ID"
-        title="$THRASH_MACHINE_PROJECT_TITLE"
+        identity="$SPIN_CHARA_MOD_ID"
+        title="$SPIN_CHARA_PROJECT_TITLE"
     else
-        identity="${THRASH_MACHINE_MOD_ID}_debug"
-        title="${THRASH_MACHINE_PROJECT_TITLE} Debug"
+        identity="${SPIN_CHARA_MOD_ID}_debug"
+        title="${SPIN_CHARA_PROJECT_TITLE} Debug"
     fi
     run_helper patch-lua-config \
-        "$stage_dir" "$THRASH_MACHINE_MOD_ID" "$release_mode" \
+        "$stage_dir" "$SPIN_CHARA_MOD_ID" "$release_mode" \
         "$identity" "$title"
-    if [ "${THRASH_MACHINE_ANDROID_TOUCH_SKIP_INTRO:-0}" = "1" ]; then
+    if [ "${SPIN_CHARA_ANDROID_TOUCH_SKIP_INTRO:-0}" = "1" ]; then
         run_helper patch-android-loading-touch \
             "$stage_dir/src/engine/loadstate.lua"
     fi
@@ -785,21 +785,21 @@ prepare_stage() {
 }
 
 ensure_love_windows() {
-    [ "$THRASH_MACHINE_BUILD_WINDOWS_EXE" = "1" ] || return 0
-    mkdir -p "$THRASH_MACHINE_CACHE_DIR"
-    love_zip="$THRASH_MACHINE_CACHE_DIR/love-${THRASH_MACHINE_LOVE_VERSION}-${THRASH_MACHINE_LOVE_ARCH}.zip"
-    love_dir="$THRASH_MACHINE_CACHE_DIR/love-${THRASH_MACHINE_LOVE_VERSION}-${THRASH_MACHINE_LOVE_ARCH}"
+    [ "$SPIN_CHARA_BUILD_WINDOWS_EXE" = "1" ] || return 0
+    mkdir -p "$SPIN_CHARA_CACHE_DIR"
+    love_zip="$SPIN_CHARA_CACHE_DIR/love-${SPIN_CHARA_LOVE_VERSION}-${SPIN_CHARA_LOVE_ARCH}.zip"
+    love_dir="$SPIN_CHARA_CACHE_DIR/love-${SPIN_CHARA_LOVE_VERSION}-${SPIN_CHARA_LOVE_ARCH}"
     if [ ! -f "$love_zip" ] || [ ! -s "$love_zip" ]; then
         rm -f "$love_zip"
-        log "正在下载 LÖVE ${THRASH_MACHINE_LOVE_VERSION} ${THRASH_MACHINE_LOVE_ARCH}，用于生成 Windows 可执行文件"
+        log "正在下载 LÖVE ${SPIN_CHARA_LOVE_VERSION} ${SPIN_CHARA_LOVE_ARCH}，用于生成 Windows 可执行文件"
         curl --fail --location --retry 3 --retry-delay 2 \
-            --output "$love_zip" "$THRASH_MACHINE_LOVE_WINDOWS_ZIP_URL" || {
+            --output "$love_zip" "$SPIN_CHARA_LOVE_WINDOWS_ZIP_URL" || {
             rm -f "$love_zip"
-            fail "下载 LÖVE ${THRASH_MACHINE_LOVE_VERSION} ${THRASH_MACHINE_LOVE_ARCH} 失败（$THRASH_MACHINE_LOVE_WINDOWS_ZIP_URL）。请检查网络后重试；也可手动下载并放到 $love_zip"
+            fail "下载 LÖVE ${SPIN_CHARA_LOVE_VERSION} ${SPIN_CHARA_LOVE_ARCH} 失败（$SPIN_CHARA_LOVE_WINDOWS_ZIP_URL）。请检查网络后重试；也可手动下载并放到 $love_zip"
         }
     fi
     if [ ! -d "$love_dir" ]; then
-        extract_dir="$THRASH_MACHINE_CACHE_DIR/love-${THRASH_MACHINE_LOVE_VERSION}-${THRASH_MACHINE_LOVE_ARCH}.extract"
+        extract_dir="$SPIN_CHARA_CACHE_DIR/love-${SPIN_CHARA_LOVE_VERSION}-${SPIN_CHARA_LOVE_ARCH}.extract"
         rm -rf "$extract_dir"
         mkdir -p "$extract_dir"
         unzip -q "$love_zip" -d "$extract_dir"
@@ -812,36 +812,36 @@ ensure_love_windows() {
     fi
     if [ ! -f "$love_dir/love.exe" ]; then
         rm -rf "$love_dir" "$love_zip"
-        fail "LÖVE ${THRASH_MACHINE_LOVE_VERSION} 缓存损坏（缺少 love.exe），已清除缓存，请重试构建"
+        fail "LÖVE ${SPIN_CHARA_LOVE_VERSION} 缓存损坏（缺少 love.exe），已清除缓存，请重试构建"
     fi
 }
 
 build_variant() {
     variant="$1"
-    THRASH_MACHINE_CURRENT_VARIANT="$variant"
+    SPIN_CHARA_CURRENT_VARIANT="$variant"
     log "开始构建变体: $variant"
     prepare_stage "$variant"
-    if [ "$THRASH_MACHINE_BUILD_LOVE" = "1" ]; then
-        love_output_dir="$THRASH_MACHINE_OUTPUT_DIR"
+    if [ "$SPIN_CHARA_BUILD_LOVE" = "1" ]; then
+        love_output_dir="$SPIN_CHARA_OUTPUT_DIR"
     else
-        love_output_dir="$THRASH_MACHINE_BUILD_ROOT/love"
+        love_output_dir="$SPIN_CHARA_BUILD_ROOT/love"
     fi
-    love_file="$love_output_dir/${THRASH_MACHINE_OUTPUT_BASENAME}-${variant}.love"
+    love_file="$love_output_dir/${SPIN_CHARA_OUTPUT_BASENAME}-${variant}.love"
     zip_dir "$love_file" "$stage_dir"
 
-    if [ "$THRASH_MACHINE_BUILD_WINDOWS_EXE" = "1" ]; then
-        love_dir="$THRASH_MACHINE_CACHE_DIR/love-${THRASH_MACHINE_LOVE_VERSION}-${THRASH_MACHINE_LOVE_ARCH}"
-        package_name="${THRASH_MACHINE_OUTPUT_BASENAME}-${variant}-${THRASH_MACHINE_LOVE_ARCH}"
-        package_dir="$THRASH_MACHINE_OUTPUT_DIR/$package_name"
-        exe_name="${THRASH_MACHINE_EXE_BASENAME}-${variant}.exe"
+    if [ "$SPIN_CHARA_BUILD_WINDOWS_EXE" = "1" ]; then
+        love_dir="$SPIN_CHARA_CACHE_DIR/love-${SPIN_CHARA_LOVE_VERSION}-${SPIN_CHARA_LOVE_ARCH}"
+        package_name="${SPIN_CHARA_OUTPUT_BASENAME}-${variant}-${SPIN_CHARA_LOVE_ARCH}"
+        package_dir="$SPIN_CHARA_OUTPUT_DIR/$package_name"
+        exe_name="${SPIN_CHARA_EXE_BASENAME}-${variant}.exe"
         rm -rf "$package_dir"
         mkdir -p "$package_dir"
         # Inject the icon into a copy of love.exe BEFORE cat appends the .love
         # payload (rcedit rebuilds the PE and would drop appended bytes).
         local ico="" icon_love="$love_dir/love.exe" candidate
-        ico="$(resolve_win_ico "$THRASH_MACHINE_BUILD_ROOT/$variant/icon" || true)"
+        ico="$(resolve_win_ico "$SPIN_CHARA_BUILD_ROOT/$variant/icon" || true)"
         if [ -n "$ico" ]; then
-            candidate="$THRASH_MACHINE_BUILD_ROOT/$variant/icon/love-icon.exe"
+            candidate="$SPIN_CHARA_BUILD_ROOT/$variant/icon/love-icon.exe"
             cp "$love_dir/love.exe" "$candidate"
             if inject_exe_icon "$candidate" "$ico"; then
                 icon_love="$candidate"
@@ -852,43 +852,43 @@ build_variant() {
         cat "$icon_love" "$love_file" > "$package_dir/$exe_name"
         cp "$love_dir"/*.dll "$package_dir/"
         test ! -f "$love_dir/license.txt" || cp "$love_dir/license.txt" "$package_dir/"
-        zip_dir "$THRASH_MACHINE_OUTPUT_DIR/${package_name}.zip" "$package_dir" "$package_name"
+        zip_dir "$SPIN_CHARA_OUTPUT_DIR/${package_name}.zip" "$package_dir" "$package_name"
         # The zip is the deliverable: drop the unpacked staging folder so dist
         # stays clean (the folder holds exactly what the zip contains).
-        if [ -s "$THRASH_MACHINE_OUTPUT_DIR/${package_name}.zip" ]; then
+        if [ -s "$SPIN_CHARA_OUTPUT_DIR/${package_name}.zip" ]; then
             rm -rf "$package_dir"
         else
-            fail "Windows package zip was not created: $THRASH_MACHINE_OUTPUT_DIR/${package_name}.zip"
+            fail "Windows package zip was not created: $SPIN_CHARA_OUTPUT_DIR/${package_name}.zip"
         fi
     fi
 
-    if [ "$THRASH_MACHINE_BUILD_LOVE" != "1" ] \
-        && [ "$THRASH_MACHINE_BUILD_WINDOWS_EXE" = "1" ]; then
+    if [ "$SPIN_CHARA_BUILD_LOVE" != "1" ] \
+        && [ "$SPIN_CHARA_BUILD_WINDOWS_EXE" = "1" ]; then
         rm -f "$love_file"
     fi
 }
 
 # shellcheck source=build-helper/lib.sh
-source "$THRASH_MACHINE_MOD_DIR/build-helper/lib.sh"
+source "$SPIN_CHARA_MOD_DIR/build-helper/lib.sh"
 need_git
 need_cmd tar
 need_cmd unzip
 need_cmd curl
 # `zip` is optional: when missing, zip_dir falls back to the build-helper
 # (LÖVE) which writes stored zips.
-if [ "$THRASH_MACHINE_BUILD_LOVE" != "1" ] \
-    && [ "$THRASH_MACHINE_BUILD_WINDOWS_EXE" != "1" ]; then
-    fail "Nothing to build: set THRASH_MACHINE_BUILD_LOVE=1 and/or THRASH_MACHINE_BUILD_WINDOWS_EXE=1"
+if [ "$SPIN_CHARA_BUILD_LOVE" != "1" ] \
+    && [ "$SPIN_CHARA_BUILD_WINDOWS_EXE" != "1" ]; then
+    fail "Nothing to build: set SPIN_CHARA_BUILD_LOVE=1 and/or SPIN_CHARA_BUILD_WINDOWS_EXE=1"
 fi
 resolve_kristal_source
 ensure_kristal
-mkdir -p "$THRASH_MACHINE_OUTPUT_DIR"
+mkdir -p "$SPIN_CHARA_OUTPUT_DIR"
 ensure_love_windows
-for variant in $THRASH_MACHINE_BUILD_VARIANTS; do
+for variant in $SPIN_CHARA_BUILD_VARIANTS; do
     build_variant "$variant"
 done
 # All variants succeeded: the EXIT/INT/TERM trap must not clean dist.
-THRASH_MACHINE_BUILD_FINISHED=1
-THRASH_MACHINE_CURRENT_VARIANT=""
-log "构建完成，输出目录: $THRASH_MACHINE_OUTPUT_DIR"
-open_output_dir "$THRASH_MACHINE_OUTPUT_DIR"
+SPIN_CHARA_BUILD_FINISHED=1
+SPIN_CHARA_CURRENT_VARIANT=""
+log "构建完成，输出目录: $SPIN_CHARA_OUTPUT_DIR"
+open_output_dir "$SPIN_CHARA_OUTPUT_DIR"

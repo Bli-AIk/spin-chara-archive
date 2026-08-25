@@ -92,8 +92,8 @@ jobs:
           # Unlike GitHub's auto-generated archives, include the checked-out
           # submodule contents so the mod is complete and usable as-is.
           tar --exclude='.git' --exclude='.build' --exclude='dist*' --exclude='.tools' --exclude='.worktrees' \
-            -czf "dist/thrash-machine-$TAG-full-source.tar.gz" -C "$PWD" .
-          (cd "$PWD" && zip -qr "dist/thrash-machine-$TAG-full-source.zip" . \
+            -czf "dist/spin-chara-$TAG-full-source.tar.gz" -C "$PWD" .
+          (cd "$PWD" && zip -qr "dist/spin-chara-$TAG-full-source.zip" . \
             -x '.git*' '.build*' 'dist*' '.tools*' '.worktrees*')
 
       - name: Generate and verify SHA-256 manifest
@@ -102,7 +102,7 @@ jobs:
           (cd dist && sha256sum -c SHA256SUMS)
       - uses: actions/upload-artifact@v4
         with:
-          name: thrash-machine-${{ needs.release.outputs.tag_name }}
+          name: spin-chara-${{ needs.release.outputs.tag_name }}
           path: dist/
           if-no-files-found: error
       - name: Upload release assets

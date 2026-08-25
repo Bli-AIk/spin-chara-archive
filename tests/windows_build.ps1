@@ -42,22 +42,22 @@ try {
     Remove-Item -LiteralPath $hashFixture -Force -ErrorAction SilentlyContinue
 }
 
-$environmentNames = @('THRASH_MACHINE_TOOLS_DIR', 'THRASH_MACHINE_KRISTAL_DIR', 'KRISTAL_ROOT')
+$environmentNames = @('SPIN_CHARA_TOOLS_DIR', 'SPIN_CHARA_KRISTAL_DIR', 'KRISTAL_ROOT')
 $previous = @{}
 foreach ($name in $environmentNames) {
     $previous[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
 }
 
 try {
-    $override = Join-Path ([System.IO.Path]::GetTempPath()) ("thrash-machine-tools-" + [guid]::NewGuid().ToString('N'))
-    $env:THRASH_MACHINE_TOOLS_DIR = $override
+    $override = Join-Path ([System.IO.Path]::GetTempPath()) ("spin-chara-tools-" + [guid]::NewGuid().ToString('N'))
+    $env:SPIN_CHARA_TOOLS_DIR = $override
     $actual = Get-TMSharedToolsDir $Root
     if ($actual -ne [System.IO.Path]::GetFullPath($override)) {
         throw "tools override was not respected: $actual"
     }
 
-    Remove-Item Env:THRASH_MACHINE_TOOLS_DIR -ErrorAction SilentlyContinue
-    Remove-Item Env:THRASH_MACHINE_KRISTAL_DIR -ErrorAction SilentlyContinue
+    Remove-Item Env:SPIN_CHARA_TOOLS_DIR -ErrorAction SilentlyContinue
+    Remove-Item Env:SPIN_CHARA_KRISTAL_DIR -ErrorAction SilentlyContinue
     Remove-Item Env:KRISTAL_ROOT -ErrorAction SilentlyContinue
     $boundary = Get-TMSharedToolsDir ([System.IO.Path]::GetPathRoot($Root))
     if ([string]::IsNullOrWhiteSpace($boundary)) {
@@ -96,7 +96,7 @@ try {
             Remove-Item -LiteralPath $plan -Force -ErrorAction SilentlyContinue
         }
 
-        $zipRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("thrash-machine-helper-zip-" + [guid]::NewGuid().ToString('N'))
+        $zipRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("spin-chara-helper-zip-" + [guid]::NewGuid().ToString('N'))
         $zipSource = Join-Path $zipRoot 'source with spaces'
         $zipOutput = Join-Path $zipRoot 'archive.zip'
         try {

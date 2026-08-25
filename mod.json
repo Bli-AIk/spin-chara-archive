@@ -1,13 +1,13 @@
 {
     // The ID of your project. Should be unique!!
-    "id": "thrash-machine",
+    "id": "spin-chara",
     // Displays on the main menu.
-    "name": "Thrash Machine",
+    "name": "spin-chara",
     // Displays underneath the name. Optional.
     "subtitle": "Kristal Lua template",
 
     // The version of your project.
-    "version": "v0.3.0", // x-release-please-version
+    "version": "v0.0.0", // x-release-please-version
     // What version of the engine your project was made with.
     "engineVer": "v0.11.0-dev",
 

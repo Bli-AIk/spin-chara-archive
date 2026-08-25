@@ -59,7 +59,7 @@ resolve_engine() {
         [ "$parent" = "$probe" ] && break
         probe="$parent"
     done
-    for candidate in "${KRISTAL_ROOT:-}" "${THRASH_MACHINE_KRISTAL_DIR:-}"; do
+    for candidate in "${KRISTAL_ROOT:-}" "${SPIN_CHARA_KRISTAL_DIR:-}"; do
         [ -n "$candidate" ] || continue
         if [ -f "$candidate/main.lua" ] && [ -f "$candidate/src/kristal.lua" ] && [ -f "$candidate/VERSION" ]; then
             ENGINE_ROOT="$(CDPATH= cd -- "$candidate" && pwd -P)"

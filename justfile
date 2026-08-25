@@ -35,25 +35,25 @@ test-kristal:
 # Build .love only.
 # zh_hans: 只打包 .love
 build-love:
-    @{{ if os() == "windows" { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"" + justfile_directory() + "/tools/build.ps1\" love" } else { "THRASH_MACHINE_BUILD_LOVE=1 THRASH_MACHINE_BUILD_WINDOWS_EXE=0 bash ./tools/build_standalone.sh" } }}
+    @{{ if os() == "windows" { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"" + justfile_directory() + "/tools/build.ps1\" love" } else { "SPIN_CHARA_BUILD_LOVE=1 SPIN_CHARA_BUILD_WINDOWS_EXE=0 bash ./tools/build_standalone.sh" } }}
 
 # Build Windows only.
 # zh_hans: 只打包 Windows
 build-win:
-    @{{ if os() == "windows" { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"" + justfile_directory() + "/tools/build.ps1\" win" } else { "THRASH_MACHINE_BUILD_LOVE=0 THRASH_MACHINE_BUILD_WINDOWS_EXE=1 bash ./tools/build_standalone.sh" } }}
+    @{{ if os() == "windows" { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"" + justfile_directory() + "/tools/build.ps1\" win" } else { "SPIN_CHARA_BUILD_LOVE=0 SPIN_CHARA_BUILD_WINDOWS_EXE=1 bash ./tools/build_standalone.sh" } }}
 
 # Build .love + Windows (original behavior).
 # zh_hans: 同时打包 .love 和 Windows（老用法）
 build:
-    @{{ if os() == "windows" { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"" + justfile_directory() + "/tools/build.ps1\" all" } else { "THRASH_MACHINE_BUILD_LOVE=1 THRASH_MACHINE_BUILD_WINDOWS_EXE=1 bash ./tools/build_standalone.sh" } }}
+    @{{ if os() == "windows" { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"" + justfile_directory() + "/tools/build.ps1\" all" } else { "SPIN_CHARA_BUILD_LOVE=1 SPIN_CHARA_BUILD_WINDOWS_EXE=1 bash ./tools/build_standalone.sh" } }}
 
 # Compile the Android APK from source (full build; needs JDK 17 + Android SDK API 34 + NDK 25.2.9519653).
 # A missing JDK 17 or Android SDK (API 34 + build-tools 34.0.0 + NDK 25.2.9519653) is
 # auto-downloaded into the shared tools dir next to the Kristal engine on first use
 # (<kristal-root>/.tools/jdk17 / <kristal-root>/.tools/android-sdk; project-root .tools as fallback).
-# Uses the pinned Kristal commit by default; set THRASH_MACHINE_KRISTAL_SOURCE=ask
+# Uses the pinned Kristal commit by default; set SPIN_CHARA_KRISTAL_SOURCE=ask
 # to choose a local path, tag, commit, or branch interactively.
-# zh_hans: 编译构建 Android APK（完整构建，需要 JDK 17 + Android SDK API 34 + NDK 25.2.9519653；缺 JDK/SDK 时首次自动下载到 Kristal 根 .tools/jdk17 / .tools/android-sdk，无引擎时回退 project 根 .tools；默认使用固定 Kristal commit；设 THRASH_MACHINE_KRISTAL_SOURCE=ask 可交互选择本地路径、tag、commit 或分支）
+# zh_hans: 编译构建 Android APK（完整构建，需要 JDK 17 + Android SDK API 34 + NDK 25.2.9519653；缺 JDK/SDK 时首次自动下载到 Kristal 根 .tools/jdk17 / .tools/android-sdk，无引擎时回退 project 根 .tools；默认使用固定 Kristal commit；设 SPIN_CHARA_KRISTAL_SOURCE=ask 可交互选择本地路径、tag、commit 或分支）
 build-android:
     @{{ if os() == "windows" { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"" + justfile_directory() + "/tools/build_android.ps1\" compile" } else { "bash ./tools/build_android.sh" } }}
 

@@ -4,7 +4,7 @@ rem remains owned by kristal-debug-tools.
 setlocal EnableExtensions
 set "GUI_LAUNCHER=%~dp0libraries\kristal-debug-tools\gui.cmd"
 if not exist "%GUI_LAUNCHER%" (
-    echo [thrash-machine] kristal-debug-tools is not initialized. Run: git submodule update --init --recursive 1>&2
+    echo [spin-chara] kristal-debug-tools is not initialized. Run: git submodule update --init --recursive 1>&2
     exit /b 1
 )
 call "%GUI_LAUNCHER%" %*

@@ -2,7 +2,7 @@
 set -eu
 
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)
-tmp=$(mktemp -d "${TMPDIR:-/tmp}/thrash-machine-manifest.XXXXXX")
+tmp=$(mktemp -d "${TMPDIR:-/tmp}/spin-chara-manifest.XXXXXX")
 trap 'rm -rf "$tmp"' EXIT HUP INT TERM
 
 run_plan() {

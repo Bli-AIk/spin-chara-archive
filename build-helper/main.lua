@@ -1,4 +1,4 @@
--- Build helper for thrash-machine's packaging scripts, run with the LÖVE
+-- Build helper for spin-chara's packaging scripts, run with the LÖVE
 -- the user already has (`love build-helper <subcommand> ...`). It is a
 -- faithful Lua port of build_standalone.py, so the packaging needs no
 -- Python — only LÖVE, which every user of the mod already needs to run it.
@@ -246,11 +246,11 @@ local GRADLE_ORIGINAL = [[    buildTypes {
     }
 ]]
 
-local GRADLE_REPLACEMENT = [[    def signingKeystore = System.getenv("THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE")
+local GRADLE_REPLACEMENT = [[    def signingKeystore = System.getenv("SPIN_CHARA_ANDROID_SIGNING_KEYSTORE")
     def hasCustomSigning = signingKeystore != null && !signingKeystore.isEmpty()
-    def signingStorePassword = System.getenv("THRASH_MACHINE_ANDROID_SIGNING_STORE_PASSWORD")
-    def signingKeyAlias = System.getenv("THRASH_MACHINE_ANDROID_SIGNING_KEY_ALIAS")
-    def signingKeyPassword = System.getenv("THRASH_MACHINE_ANDROID_SIGNING_KEY_PASSWORD")
+    def signingStorePassword = System.getenv("SPIN_CHARA_ANDROID_SIGNING_STORE_PASSWORD")
+    def signingKeyAlias = System.getenv("SPIN_CHARA_ANDROID_SIGNING_KEY_ALIAS")
+    def signingKeyPassword = System.getenv("SPIN_CHARA_ANDROID_SIGNING_KEY_PASSWORD")
 
     signingConfigs {
         if (hasCustomSigning) {
@@ -484,10 +484,10 @@ end
 local function main()
     -- LÖVE 11 does not expose positional args via love.arg (its C-side
     -- parser drops them), so the shell hands them over in a file named by
-    -- THRASH_MACHINE_HELPER_ARGS (one argument per line).
-    local args_file = os.getenv("THRASH_MACHINE_HELPER_ARGS")
+    -- SPIN_CHARA_HELPER_ARGS (one argument per line).
+    local args_file = os.getenv("SPIN_CHARA_HELPER_ARGS")
     if not args_file then
-        fail("missing THRASH_MACHINE_HELPER_ARGS (run via build-helper/lib.sh)")
+        fail("missing SPIN_CHARA_HELPER_ARGS (run via build-helper/lib.sh)")
     end
     local args = {}
     for line in io.lines(args_file) do

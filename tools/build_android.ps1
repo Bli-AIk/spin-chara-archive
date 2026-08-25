@@ -15,12 +15,12 @@ $Root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 . (Join-Path $PSScriptRoot 'windows_common.ps1')
 
 $ToolsDir = Get-TMSharedToolsDir $Root
-$OutputDir = Get-TMEnvOrDefault 'THRASH_MACHINE_OUTPUT_DIR' (Join-Path $Root 'dist')
-$OutputBasename = Get-TMEnvOrDefault 'THRASH_MACHINE_OUTPUT_BASENAME' 'thrash-machine'
-$AndroidBuildToolsVersion = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_BUILD_TOOLS_VERSION' '34.0.0'
-$AndroidWorkDir = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_WORK_DIR' (Join-Path $Root '.build\android')
-$AndroidWrapWorkDir = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_WRAP_WORK_DIR' (Join-Path $Root '.build\android-wrap')
-$CacheDir = Get-TMEnvOrDefault 'THRASH_MACHINE_CACHE_DIR' (Join-Path $Root '.build\cache')
+$OutputDir = Get-TMEnvOrDefault 'SPIN_CHARA_OUTPUT_DIR' (Join-Path $Root 'dist')
+$OutputBasename = Get-TMEnvOrDefault 'SPIN_CHARA_OUTPUT_BASENAME' 'spin-chara'
+$AndroidBuildToolsVersion = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_BUILD_TOOLS_VERSION' '34.0.0'
+$AndroidWorkDir = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_WORK_DIR' (Join-Path $Root '.build\android')
+$AndroidWrapWorkDir = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_WRAP_WORK_DIR' (Join-Path $Root '.build\android-wrap')
+$CacheDir = Get-TMEnvOrDefault 'SPIN_CHARA_CACHE_DIR' (Join-Path $Root '.build\cache')
 $script:TMAndroidGit = $null
 
 function Get-TMAndroidGit {
@@ -61,7 +61,7 @@ function Test-TMJava17 {
 }
 
 function Get-TMJavaHome {
-    foreach ($configured in @($env:THRASH_MACHINE_ANDROID_JAVA_HOME, $env:JAVA_HOME)) {
+    foreach ($configured in @($env:SPIN_CHARA_ANDROID_JAVA_HOME, $env:JAVA_HOME)) {
         if (-not $configured) { continue }
         $java = Join-Path $configured 'bin\java.exe'
         if (-not (Test-TMJava17 $java)) {
@@ -86,8 +86,8 @@ function Get-TMJavaHome {
         if ($inner) { return $inner.FullName }
     }
 
-    if ($env:THRASH_MACHINE_FETCH_JDK -eq '0') {
-        throw 'No JDK 17 is available and THRASH_MACHINE_FETCH_JDK=0.'
+    if ($env:SPIN_CHARA_FETCH_JDK -eq '0') {
+        throw 'No JDK 17 is available and SPIN_CHARA_FETCH_JDK=0.'
     }
     $archive = Join-Path $ToolsDir 'jdk17.zip'
     if (-not (Test-Path -LiteralPath $archive)) {
@@ -130,8 +130,8 @@ function Get-TMAndroidSdk {
             return [System.IO.Path]::GetFullPath($configured)
         }
     }
-    if ($env:THRASH_MACHINE_FETCH_SDK -eq '0') {
-        throw 'A complete Android SDK is required and THRASH_MACHINE_FETCH_SDK=0.'
+    if ($env:SPIN_CHARA_FETCH_SDK -eq '0') {
+        throw 'A complete Android SDK is required and SPIN_CHARA_FETCH_SDK=0.'
     }
 
     $sdk = Join-Path $ToolsDir 'android-sdk'
@@ -168,7 +168,7 @@ function Get-TMAndroidSdk {
 }
 
 function Get-TMAndroidBuildTools {
-    $candidates = @($env:THRASH_MACHINE_ANDROID_BUILD_TOOLS_DIR)
+    $candidates = @($env:SPIN_CHARA_ANDROID_BUILD_TOOLS_DIR)
     if ($env:ANDROID_SDK_ROOT) {
         $candidates += Join-Path $env:ANDROID_SDK_ROOT "build-tools\$AndroidBuildToolsVersion"
     }
@@ -237,15 +237,15 @@ function Build-TMAndroidLove {
     Remove-Item -LiteralPath $loveDirectory -Recurse -Force -ErrorAction SilentlyContinue
     New-Item -ItemType Directory -Force -Path $loveDirectory | Out-Null
     $saved = @{}
-    foreach ($name in @('LOVE', 'THRASH_MACHINE_ANDROID_TOUCH_SKIP_INTRO', 'THRASH_MACHINE_BUILD_VARIANTS', 'THRASH_MACHINE_OUTPUT_DIR', 'THRASH_MACHINE_NO_OPEN_DIR')) {
+    foreach ($name in @('LOVE', 'SPIN_CHARA_ANDROID_TOUCH_SKIP_INTRO', 'SPIN_CHARA_BUILD_VARIANTS', 'SPIN_CHARA_OUTPUT_DIR', 'SPIN_CHARA_NO_OPEN_DIR')) {
         $saved[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
     }
     try {
         $env:LOVE = $LoveExecutable
-        $env:THRASH_MACHINE_ANDROID_TOUCH_SKIP_INTRO = '1'
-        $env:THRASH_MACHINE_BUILD_VARIANTS = 'release'
-        $env:THRASH_MACHINE_OUTPUT_DIR = $loveDirectory
-        $env:THRASH_MACHINE_NO_OPEN_DIR = '1'
+        $env:SPIN_CHARA_ANDROID_TOUCH_SKIP_INTRO = '1'
+        $env:SPIN_CHARA_BUILD_VARIANTS = 'release'
+        $env:SPIN_CHARA_OUTPUT_DIR = $loveDirectory
+        $env:SPIN_CHARA_NO_OPEN_DIR = '1'
         & (Join-Path $PSScriptRoot 'build.ps1') -Target love | Out-Host
     } finally {
         foreach ($name in $saved.Keys) {
@@ -260,17 +260,17 @@ function Build-TMAndroidLove {
 }
 
 function Get-TMEmbedApk {
-    $explicit = $env:THRASH_MACHINE_ANDROID_EMBED_APK
+    $explicit = $env:SPIN_CHARA_ANDROID_EMBED_APK
     if ($explicit) {
         if (-not (Test-Path -LiteralPath $explicit)) { throw "Embed APK does not exist: $explicit" }
         return [System.IO.Path]::GetFullPath($explicit)
     }
-    $url = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_EMBED_APK_URL' 'https://github.com/love2d/love-android/releases/download/11.5a/love-11.5-android-embed.apk'
+    $url = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_EMBED_APK_URL' 'https://github.com/love2d/love-android/releases/download/11.5a/love-11.5-android-embed.apk'
     $apk = Join-Path $CacheDir (Split-Path -Leaf $url)
     if (-not (Test-Path -LiteralPath $apk)) {
         Invoke-TMDownload $url $apk
     }
-    $expected = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_EMBED_APK_SHA256' 'dcf71c1b54c5b5a09598ef1e6cf4852ced5e5e612de3d0f30cfdd39b5014e889'
+    $expected = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_EMBED_APK_SHA256' 'dcf71c1b54c5b5a09598ef1e6cf4852ced5e5e612de3d0f30cfdd39b5014e889'
     if ($expected) {
         $actual = Get-TMFileSha256 $apk
         if ($actual -ne $expected.ToLowerInvariant()) {
@@ -311,24 +311,24 @@ function Get-TMAndroidSigning {
         [Parameter(Mandatory = $true)][string]$JavaHome
     )
 
-    if ($env:THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE) {
+    if ($env:SPIN_CHARA_ANDROID_SIGNING_KEYSTORE) {
         foreach ($name in @(
-            'THRASH_MACHINE_ANDROID_SIGNING_STORE_PASSWORD',
-            'THRASH_MACHINE_ANDROID_SIGNING_KEY_ALIAS',
-            'THRASH_MACHINE_ANDROID_SIGNING_KEY_PASSWORD'
+            'SPIN_CHARA_ANDROID_SIGNING_STORE_PASSWORD',
+            'SPIN_CHARA_ANDROID_SIGNING_KEY_ALIAS',
+            'SPIN_CHARA_ANDROID_SIGNING_KEY_PASSWORD'
         )) {
             if (-not [Environment]::GetEnvironmentVariable($name, 'Process')) {
-                throw "$name is required with THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE."
+                throw "$name is required with SPIN_CHARA_ANDROID_SIGNING_KEYSTORE."
             }
         }
-        if (-not (Test-Path -LiteralPath $env:THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE)) {
-            throw "Android signing keystore does not exist: $env:THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE"
+        if (-not (Test-Path -LiteralPath $env:SPIN_CHARA_ANDROID_SIGNING_KEYSTORE)) {
+            throw "Android signing keystore does not exist: $env:SPIN_CHARA_ANDROID_SIGNING_KEYSTORE"
         }
         return [PSCustomObject]@{
-            Path = [System.IO.Path]::GetFullPath($env:THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE)
-            StorePassword = $env:THRASH_MACHINE_ANDROID_SIGNING_STORE_PASSWORD
-            Alias = $env:THRASH_MACHINE_ANDROID_SIGNING_KEY_ALIAS
-            KeyPassword = $env:THRASH_MACHINE_ANDROID_SIGNING_KEY_PASSWORD
+            Path = [System.IO.Path]::GetFullPath($env:SPIN_CHARA_ANDROID_SIGNING_KEYSTORE)
+            StorePassword = $env:SPIN_CHARA_ANDROID_SIGNING_STORE_PASSWORD
+            Alias = $env:SPIN_CHARA_ANDROID_SIGNING_KEY_ALIAS
+            KeyPassword = $env:SPIN_CHARA_ANDROID_SIGNING_KEY_PASSWORD
         }
     }
 
@@ -393,9 +393,9 @@ function Test-TMGitReference {
 
 function Get-TMLoveAndroidSource {
     $git = Get-TMAndroidGit
-    $repository = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_REPO' 'https://github.com/love2d/love-android.git'
-    $reference = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_REF' '11.5'
-    $cache = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_CACHE_DIR' (Join-Path $CacheDir 'love-android-11.5')
+    $repository = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_REPO' 'https://github.com/love2d/love-android.git'
+    $reference = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_REF' '11.5'
+    $cache = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_CACHE_DIR' (Join-Path $CacheDir 'love-android-11.5')
     if (Test-Path -LiteralPath $cache) {
         if (-not (Test-Path -LiteralPath (Join-Path $cache '.git'))) {
             throw "Android source cache exists but is not a Git checkout: $cache"
@@ -447,8 +447,8 @@ function Get-TMAndroidDensityDpi {
 function Stage-TMAndroidIcons {
     param([Parameter(Mandatory = $true)][string]$StageDirectory)
 
-    $iconDirectory = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_ICON_DIR' (Join-Path $Root 'assets\icon\android')
-    $singleIcon = $env:THRASH_MACHINE_ANDROID_ICON
+    $iconDirectory = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_ICON_DIR' (Join-Path $Root 'assets\icon\android')
+    $singleIcon = $env:SPIN_CHARA_ANDROID_ICON
     $densities = @('ldpi', 'mdpi', 'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi')
     $available = @($densities | Where-Object { Test-Path -LiteralPath (Join-Path $iconDirectory "$_.png") })
     if ($available.Count -eq 0 -and $singleIcon) {
@@ -474,12 +474,12 @@ function Stage-TMAndroidIcons {
 }
 
 function Get-TMAndroidCompileSettings {
-    $applicationId = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_APPLICATION_ID' 'org.thrashmachine.template'
-    $name = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_NAME' 'Thrash Machine'
-    $orientation = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_ORIENTATION' 'landscape'
-    $versionCode = Get-TMEnvOrDefault 'THRASH_MACHINE_ANDROID_VERSION_CODE' '1'
-    $versionName = if ($env:THRASH_MACHINE_ANDROID_VERSION_NAME) {
-        $env:THRASH_MACHINE_ANDROID_VERSION_NAME
+    $applicationId = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_APPLICATION_ID' 'org.spinchara.template'
+    $name = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_NAME' 'spin-chara'
+    $orientation = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_ORIENTATION' 'landscape'
+    $versionCode = Get-TMEnvOrDefault 'SPIN_CHARA_ANDROID_VERSION_CODE' '1'
+    $versionName = if ($env:SPIN_CHARA_ANDROID_VERSION_NAME) {
+        $env:SPIN_CHARA_ANDROID_VERSION_NAME
     } else {
         Get-TMModVersion
     }
@@ -551,7 +551,7 @@ function Build-TMAndroidCompile {
 
 if ($Mode -eq 'menu') {
     Write-Host ''
-    Write-Host 'Thrash Machine Android packaging'
+    Write-Host 'spin-chara Android packaging'
     Write-Host '  1) Wrap build: official LÖVE APK plus game.love'
     Write-Host '  2) Compile build: source build with Android SDK and NDK'
     Write-Host ''

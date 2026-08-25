@@ -51,20 +51,20 @@ jobs:
             sha256sum --ignore-missing -c checksums-linux-x64.txt
             ./kristal-run-linux-x64 just-dump "$GITHUB_WORKSPACE/justfile" \
               | jq -e '.recipes["build-love"] and .recipes.gui' >/dev/null
-            THRASH_MACHINE_OUTPUT_DIR="$GITHUB_WORKSPACE/dist-gui" \
+            SPIN_CHARA_OUTPUT_DIR="$GITHUB_WORKSPACE/dist-gui" \
               ./kristal-run-linux-x64 just-task "$GITHUB_WORKSPACE/justfile" build-love
           )
-          for file in dist-gui/thrash-machine-release.love dist-gui/thrash-machine-debug.love; do
+          for file in dist-gui/spin-chara-release.love dist-gui/spin-chara-debug.love; do
             test -s "$file"
             unzip -t "$file" >/dev/null
-            test -z "$(unzip -Z1 "$file" | grep -Fx 'mods/thrash-machine/gui.cmd' || true)"
+            test -z "$(unzip -Z1 "$file" | grep -Fx 'mods/spin-chara/gui.cmd' || true)"
           done
       - name: Build standalone packages (love + win)
         run: just build
       - name: Build Windows-only package
-        run: THRASH_MACHINE_OUTPUT_DIR=dist-win just build-win
+        run: SPIN_CHARA_OUTPUT_DIR=dist-win just build-win
       - name: Build .love-only package
-        run: THRASH_MACHINE_OUTPUT_DIR=dist-love just build-love
+        run: SPIN_CHARA_OUTPUT_DIR=dist-love just build-love
       - name: Build project package
         run: ./.github/scripts/build_mod.sh
       - name: Run Kristal smoke test
@@ -73,62 +73,62 @@ jobs:
         run: |
           set -euo pipefail
           files=(
-            dist/thrash-machine-release.love
-            dist/thrash-machine-debug.love
-            dist/thrash-machine-release-win64.zip
-            dist/thrash-machine-debug-win64.zip
-            dist/thrash-machine-mod.zip
+            dist/spin-chara-release.love
+            dist/spin-chara-debug.love
+            dist/spin-chara-release-win64.zip
+            dist/spin-chara-debug-win64.zip
+            dist/spin-chara-mod.zip
           )
           for file in "${files[@]}"; do
             test -s "$file"
             unzip -t "$file" >/dev/null
           done
-          test -s dist-win/thrash-machine-release-win64.zip
-          test -s dist-win/thrash-machine-debug-win64.zip
-          unzip -t dist-win/thrash-machine-release-win64.zip >/dev/null
-          unzip -t dist-win/thrash-machine-debug-win64.zip >/dev/null
-          test ! -e dist-win/thrash-machine-release.love
-          test ! -e dist-win/thrash-machine-debug.love
-          test -s dist-love/thrash-machine-release.love
-          test -s dist-love/thrash-machine-debug.love
-          unzip -t dist-love/thrash-machine-release.love >/dev/null
-          unzip -t dist-love/thrash-machine-debug.love >/dev/null
+          test -s dist-win/spin-chara-release-win64.zip
+          test -s dist-win/spin-chara-debug-win64.zip
+          unzip -t dist-win/spin-chara-release-win64.zip >/dev/null
+          unzip -t dist-win/spin-chara-debug-win64.zip >/dev/null
+          test ! -e dist-win/spin-chara-release.love
+          test ! -e dist-win/spin-chara-debug.love
+          test -s dist-love/spin-chara-release.love
+          test -s dist-love/spin-chara-debug.love
+          unzip -t dist-love/spin-chara-release.love >/dev/null
+          unzip -t dist-love/spin-chara-debug.love >/dev/null
           test -z "$(find dist-love -name '*.zip' | head -n 1)"
-          unzip -Z1 dist/thrash-machine-mod.zip | grep -Fx mod.json >/dev/null
-          test -z "$(unzip -Z1 dist/thrash-machine-mod.zip | grep '^libraries/kristal-object-selector-plus/' || true)"
-          test -z "$(unzip -Z1 dist/thrash-machine-mod.zip | grep '^libraries/terminal-cli/' || true)"
-          test -z "$(unzip -Z1 dist/thrash-machine-mod.zip | grep '^libraries/kristal-debug-tools/' || true)"
-          test -z "$(unzip -Z1 dist/thrash-machine-release.love | grep '^mods/thrash-machine/libraries/kristal-debug-tools/' || true)"
+          unzip -Z1 dist/spin-chara-mod.zip | grep -Fx mod.json >/dev/null
+          test -z "$(unzip -Z1 dist/spin-chara-mod.zip | grep '^libraries/kristal-object-selector-plus/' || true)"
+          test -z "$(unzip -Z1 dist/spin-chara-mod.zip | grep '^libraries/terminal-cli/' || true)"
+          test -z "$(unzip -Z1 dist/spin-chara-mod.zip | grep '^libraries/kristal-debug-tools/' || true)"
+          test -z "$(unzip -Z1 dist/spin-chara-release.love | grep '^mods/spin-chara/libraries/kristal-debug-tools/' || true)"
           # gui.cmd is a local convenience wrapper, never game content. The
           # canonical launcher remains in the debug-tools library for dev use.
-          test -z "$(unzip -Z1 dist/thrash-machine-mod.zip | grep -Fx 'gui.cmd' || true)"
+          test -z "$(unzip -Z1 dist/spin-chara-mod.zip | grep -Fx 'gui.cmd' || true)"
           for archive in \
-            dist/thrash-machine-release.love \
-            dist/thrash-machine-debug.love \
-            dist-love/thrash-machine-release.love \
-            dist-love/thrash-machine-debug.love; do
-            test -z "$(unzip -Z1 "$archive" | grep -Fx 'mods/thrash-machine/gui.cmd' || true)"
+            dist/spin-chara-release.love \
+            dist/spin-chara-debug.love \
+            dist-love/spin-chara-release.love \
+            dist-love/spin-chara-debug.love; do
+            test -z "$(unzip -Z1 "$archive" | grep -Fx 'mods/spin-chara/gui.cmd' || true)"
           done
           # Debug is a development artifact: it retains development libraries.
-          unzip -Z1 dist/thrash-machine-debug.love | grep -q '^mods/thrash-machine/libraries/kristal-debug-tools/'
+          unzip -Z1 dist/spin-chara-debug.love | grep -q '^mods/spin-chara/libraries/kristal-debug-tools/'
           # Optional UT content packs follow the optionalLibraries selection in
           # mod.json: the template default keeps MGR disabled and UMR follows it
           # as a required dependent, so release and project packages are pruned
           # of them (see README "可选 UT 内容库"). Forks that re-enable the
           # packs must flip these asserts back to 'grep -q'.
-          test -z "$(unzip -Z1 dist/thrash-machine-mod.zip | grep '^libraries/MagicalGlassRedux/' || true)"
-          test -z "$(unzip -Z1 dist/thrash-machine-mod.zip | grep '^libraries/UndertaleMonstersRecreation/' || true)"
-          test -z "$(unzip -Z1 dist/thrash-machine-release.love | grep '^mods/thrash-machine/libraries/MagicalGlassRedux/' || true)"
-          test -z "$(unzip -Z1 dist/thrash-machine-release.love | grep '^mods/thrash-machine/libraries/UndertaleMonstersRecreation/' || true)"
+          test -z "$(unzip -Z1 dist/spin-chara-mod.zip | grep '^libraries/MagicalGlassRedux/' || true)"
+          test -z "$(unzip -Z1 dist/spin-chara-mod.zip | grep '^libraries/UndertaleMonstersRecreation/' || true)"
+          test -z "$(unzip -Z1 dist/spin-chara-release.love | grep '^mods/spin-chara/libraries/MagicalGlassRedux/' || true)"
+          test -z "$(unzip -Z1 dist/spin-chara-release.love | grep '^mods/spin-chara/libraries/UndertaleMonstersRecreation/' || true)"
           # Local/editor metadata must never ship, including from nested libraries.
           for archive in \
-            dist/thrash-machine-release.love \
-            dist/thrash-machine-debug.love \
-            dist/thrash-machine-mod.zip \
-            dist-love/thrash-machine-release.love \
-            dist-love/thrash-machine-debug.love \
-            dist-win/thrash-machine-release-win64.zip \
-            dist-win/thrash-machine-debug-win64.zip; do
+            dist/spin-chara-release.love \
+            dist/spin-chara-debug.love \
+            dist/spin-chara-mod.zip \
+            dist-love/spin-chara-release.love \
+            dist-love/spin-chara-debug.love \
+            dist-win/spin-chara-release-win64.zip \
+            dist-win/spin-chara-debug-win64.zip; do
             if metadata_entries=$(unzip -Z1 "$archive" | grep -E '(^|/)(\.github|\.claude)(/|$)'); then
               printf 'Package contains local metadata: %s\\n%s\\n' "$archive" "$metadata_entries" >&2
               exit 1
@@ -136,14 +136,14 @@ jobs:
           done
           # Custom-icon contract: build-time icon sources never leak into packages.
           # Inside the .love the project lives under mods/<id>/, so the leaked path
-          # would be mods/thrash-machine/assets/icon/ — not a root-level one.
-          test -z "$(unzip -Z1 dist/thrash-machine-release.love | grep '^mods/thrash-machine/assets/icon/' || true)"
-          test -z "$(unzip -Z1 dist/thrash-machine-mod.zip | grep '^assets/icon/' || true)"
+          # would be mods/spin-chara/assets/icon/ — not a root-level one.
+          test -z "$(unzip -Z1 dist/spin-chara-release.love | grep '^mods/spin-chara/assets/icon/' || true)"
+          test -z "$(unzip -Z1 dist/spin-chara-mod.zip | grep '^assets/icon/' || true)"
           # When a window icon is provided, it must land at the project root and enable the flag.
           if [ -f assets/icon/window_icon.png ]; then
-            unzip -p dist/thrash-machine-release.love mods/thrash-machine/mod.json \
+            unzip -p dist/spin-chara-release.love mods/spin-chara/mod.json \
               | grep -q '"setWindowTitleAndIcon": true'
-            unzip -Z1 dist/thrash-machine-release.love | grep -Fx 'mods/thrash-machine/window_icon.png' >/dev/null
+            unzip -Z1 dist/spin-chara-release.love | grep -Fx 'mods/spin-chara/window_icon.png' >/dev/null
           fi
       - name: Generate and verify SHA-256 manifest
         run: |
@@ -152,7 +152,7 @@ jobs:
           (cd dist && sha256sum -c SHA256SUMS)
       - uses: actions/upload-artifact@v4
         with:
-          name: thrash-machine-${{ github.sha }}
+          name: spin-chara-${{ github.sha }}
           path: dist/
           if-no-files-found: error
 
@@ -161,7 +161,7 @@ jobs:
     runs-on: windows-2022
     timeout-minutes: 90
     env:
-      THRASH_MACHINE_NO_OPEN_DIR: '1'
+      SPIN_CHARA_NO_OPEN_DIR: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -224,11 +224,11 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           . "$env:GITHUB_WORKSPACE\tools\windows_common.ps1"
-          $tools = Join-Path $env:RUNNER_TEMP 'thrash-machine-tools'
+          $tools = Join-Path $env:RUNNER_TEMP 'spin-chara-tools'
           $love = Get-TMLoveExecutable $tools -DownloadIfMissing
           "LOVE=$love" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "THRASH_MACHINE_TOOLS_DIR=$tools" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "THRASH_MACHINE_CACHE_DIR=$tools" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "SPIN_CHARA_TOOLS_DIR=$tools" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "SPIN_CHARA_CACHE_DIR=$tools" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           (Split-Path -Parent $love) | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: Run native Windows smoke tests
         shell: pwsh
@@ -328,23 +328,23 @@ jobs:
           cmd.exe /d /c tools\just.cmd build
           if ($LASTEXITCODE -ne 0) { throw "tools\\just.cmd build failed: $LASTEXITCODE" }
 
-          $env:THRASH_MACHINE_OUTPUT_DIR = Join-Path $PWD 'dist-win'
+          $env:SPIN_CHARA_OUTPUT_DIR = Join-Path $PWD 'dist-win'
           cmd.exe /d /c tools\just.cmd build-win
           if ($LASTEXITCODE -ne 0) { throw "tools\\just.cmd build-win failed: $LASTEXITCODE" }
 
-          $env:THRASH_MACHINE_OUTPUT_DIR = Join-Path $PWD 'dist-love'
+          $env:SPIN_CHARA_OUTPUT_DIR = Join-Path $PWD 'dist-love'
           cmd.exe /d /c tools\just.cmd build-love
           if ($LASTEXITCODE -ne 0) { throw "tools\\just.cmd build-love failed: $LASTEXITCODE" }
 
-          Remove-Item Env:THRASH_MACHINE_OUTPUT_DIR -ErrorAction SilentlyContinue
+          Remove-Item Env:SPIN_CHARA_OUTPUT_DIR -ErrorAction SilentlyContinue
           cmd.exe /d /c tools\just.cmd build-mod
           if ($LASTEXITCODE -ne 0) { throw "tools\\just.cmd build-mod failed: $LASTEXITCODE" }
       - name: Build Android packages through native Windows entry points
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $env:THRASH_MACHINE_OUTPUT_DIR = Join-Path $PWD 'dist-android-win'
-          $env:THRASH_MACHINE_FETCH_SDK = '0'
+          $env:SPIN_CHARA_OUTPUT_DIR = Join-Path $PWD 'dist-android-win'
+          $env:SPIN_CHARA_FETCH_SDK = '0'
 
           cmd.exe /d /c tools\just.cmd build-android
           if ($LASTEXITCODE -ne 0) { throw "tools\\just.cmd build-android failed: $LASTEXITCODE" }
@@ -352,8 +352,8 @@ jobs:
           cmd.exe /d /c tools\just.cmd build-android-wrap
           if ($LASTEXITCODE -ne 0) { throw "tools\\just.cmd build-android-wrap failed: $LASTEXITCODE" }
           foreach ($apk in @(
-            (Join-Path $env:THRASH_MACHINE_OUTPUT_DIR 'thrash-machine-android.apk'),
-            (Join-Path $env:THRASH_MACHINE_OUTPUT_DIR 'thrash-machine-android-wrap.apk')
+            (Join-Path $env:SPIN_CHARA_OUTPUT_DIR 'spin-chara-android.apk'),
+            (Join-Path $env:SPIN_CHARA_OUTPUT_DIR 'spin-chara-android-wrap.apk')
           )) {
             if (-not (Test-Path -LiteralPath $apk) -or (Get-Item -LiteralPath $apk).Length -eq 0) {
               throw "Android APK was not created: $apk"
@@ -395,17 +395,17 @@ jobs:
           }
 
           $required = @(
-            'dist/thrash-machine-release.love',
-            'dist/thrash-machine-debug.love',
-            'dist/thrash-machine-release-win64.zip',
-            'dist/thrash-machine-debug-win64.zip',
-            'dist/thrash-machine-mod.zip',
-            'dist-win/thrash-machine-release-win64.zip',
-            'dist-win/thrash-machine-debug-win64.zip',
-            'dist-love/thrash-machine-release.love',
-            'dist-love/thrash-machine-debug.love',
-            'dist-android-win/thrash-machine-android.apk',
-            'dist-android-win/thrash-machine-android-wrap.apk'
+            'dist/spin-chara-release.love',
+            'dist/spin-chara-debug.love',
+            'dist/spin-chara-release-win64.zip',
+            'dist/spin-chara-debug-win64.zip',
+            'dist/spin-chara-mod.zip',
+            'dist-win/spin-chara-release-win64.zip',
+            'dist-win/spin-chara-debug-win64.zip',
+            'dist-love/spin-chara-release.love',
+            'dist-love/spin-chara-debug.love',
+            'dist-android-win/spin-chara-android.apk',
+            'dist-android-win/spin-chara-android-wrap.apk'
           )
           foreach ($path in $required) {
             if (-not (Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).Length -eq 0) {
@@ -414,24 +414,24 @@ jobs:
             $null = Get-ZipEntries $path
           }
 
-          foreach ($path in @('dist-win/thrash-machine-release.love', 'dist-win/thrash-machine-debug.love')) {
+          foreach ($path in @('dist-win/spin-chara-release.love', 'dist-win/spin-chara-debug.love')) {
             if (Test-Path -LiteralPath $path) { throw "Windows-only build unexpectedly created: $path" }
           }
           if (Get-ChildItem -LiteralPath dist-love -Filter '*.zip' -File -ErrorAction SilentlyContinue) {
             throw 'LÖVE-only build unexpectedly created a ZIP archive.'
           }
 
-          $release = Get-ZipEntries 'dist/thrash-machine-release.love'
-          $debug = Get-ZipEntries 'dist/thrash-machine-debug.love'
-          $mod = Get-ZipEntries 'dist/thrash-machine-mod.zip'
-          $winRelease = Get-ZipEntries 'dist/thrash-machine-release-win64.zip'
-          $winDebug = Get-ZipEntries 'dist/thrash-machine-debug-win64.zip'
-          $winOnlyRelease = Get-ZipEntries 'dist-win/thrash-machine-release-win64.zip'
-          $winOnlyDebug = Get-ZipEntries 'dist-win/thrash-machine-debug-win64.zip'
-          $loveOnlyRelease = Get-ZipEntries 'dist-love/thrash-machine-release.love'
-          $loveOnlyDebug = Get-ZipEntries 'dist-love/thrash-machine-debug.love'
-          $compiledApk = Get-ZipEntries 'dist-android-win/thrash-machine-android.apk'
-          $apk = Get-ZipEntries 'dist-android-win/thrash-machine-android-wrap.apk'
+          $release = Get-ZipEntries 'dist/spin-chara-release.love'
+          $debug = Get-ZipEntries 'dist/spin-chara-debug.love'
+          $mod = Get-ZipEntries 'dist/spin-chara-mod.zip'
+          $winRelease = Get-ZipEntries 'dist/spin-chara-release-win64.zip'
+          $winDebug = Get-ZipEntries 'dist/spin-chara-debug-win64.zip'
+          $winOnlyRelease = Get-ZipEntries 'dist-win/spin-chara-release-win64.zip'
+          $winOnlyDebug = Get-ZipEntries 'dist-win/spin-chara-debug-win64.zip'
+          $loveOnlyRelease = Get-ZipEntries 'dist-love/spin-chara-release.love'
+          $loveOnlyDebug = Get-ZipEntries 'dist-love/spin-chara-debug.love'
+          $compiledApk = Get-ZipEntries 'dist-android-win/spin-chara-android.apk'
+          $apk = Get-ZipEntries 'dist-android-win/spin-chara-android-wrap.apk'
 
           Assert-ArchiveContains $mod 'mod.json'
           # Optional UT content packs follow the optionalLibraries selection in
@@ -439,13 +439,13 @@ jobs:
           # so the release .love must not contain them; the debug .love retains
           # them. Forks that re-enable the packs must flip these back to
           # Assert-ArchiveContains.
-          Assert-ArchiveOmits $release 'mods/thrash-machine/libraries/MagicalGlassRedux/'
-          Assert-ArchiveOmits $release 'mods/thrash-machine/libraries/UndertaleMonstersRecreation/'
-          Assert-ArchiveContains $debug 'mods/thrash-machine/libraries/kristal-debug-tools/'
-          Assert-ArchiveContains $winRelease 'thrash-machine-release-win64/THRASH-MACHINE-release.exe'
-          Assert-ArchiveContains $winDebug 'thrash-machine-debug-win64/THRASH-MACHINE-debug.exe'
-          Assert-ArchiveContains $winOnlyRelease 'thrash-machine-release-win64/THRASH-MACHINE-release.exe'
-          Assert-ArchiveContains $winOnlyDebug 'thrash-machine-debug-win64/THRASH-MACHINE-debug.exe'
+          Assert-ArchiveOmits $release 'mods/spin-chara/libraries/MagicalGlassRedux/'
+          Assert-ArchiveOmits $release 'mods/spin-chara/libraries/UndertaleMonstersRecreation/'
+          Assert-ArchiveContains $debug 'mods/spin-chara/libraries/kristal-debug-tools/'
+          Assert-ArchiveContains $winRelease 'spin-chara-release-win64/SPIN-CHARA-release.exe'
+          Assert-ArchiveContains $winDebug 'spin-chara-debug-win64/SPIN-CHARA-debug.exe'
+          Assert-ArchiveContains $winOnlyRelease 'spin-chara-release-win64/SPIN-CHARA-release.exe'
+          Assert-ArchiveContains $winOnlyDebug 'spin-chara-debug-win64/SPIN-CHARA-debug.exe'
           Assert-ArchiveContains $compiledApk 'assets/game.love'
           Assert-ArchiveContains $apk 'assets/game.love'
           foreach ($archive in @(
@@ -470,9 +470,9 @@ jobs:
           }
           Assert-ArchiveOmits $mod 'gui.cmd'
           foreach ($entries in @($release, $debug, $loveOnlyRelease, $loveOnlyDebug)) {
-            Assert-ArchiveOmits $entries 'mods/thrash-machine/gui.cmd'
+            Assert-ArchiveOmits $entries 'mods/spin-chara/gui.cmd'
           }
-          Assert-ArchiveOmits $release 'mods/thrash-machine/libraries/kristal-debug-tools/'
+          Assert-ArchiveOmits $release 'mods/spin-chara/libraries/kristal-debug-tools/'
       - name: Smoke test native task dispatcher cleanup
         shell: pwsh
         run: |
@@ -488,7 +488,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      THRASH_MACHINE_NO_OPEN_DIR: '1'
+      SPIN_CHARA_NO_OPEN_DIR: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -508,13 +508,13 @@ jobs:
         run: sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;25.2.9519653"
       - name: Build compiled Android APK
         run: |
-          THRASH_MACHINE_OUTPUT_DIR=dist-android-compile ./tools/build_android.sh
-          test -s dist-android-compile/thrash-machine-android.apk
-          unzip -t dist-android-compile/thrash-machine-android.apk >/dev/null
-          unzip -Z1 dist-android-compile/thrash-machine-android.apk | grep -Fx assets/game.love >/dev/null
+          SPIN_CHARA_OUTPUT_DIR=dist-android-compile ./tools/build_android.sh
+          test -s dist-android-compile/spin-chara-android.apk
+          unzip -t dist-android-compile/spin-chara-android.apk >/dev/null
+          unzip -Z1 dist-android-compile/spin-chara-android.apk | grep -Fx assets/game.love >/dev/null
       - name: Build wrapper Android APK
         run: |
-          THRASH_MACHINE_OUTPUT_DIR=dist-android-wrap ./tools/build_android_wrap.sh
-          test -s dist-android-wrap/thrash-machine-android-wrap.apk
-          unzip -t dist-android-wrap/thrash-machine-android-wrap.apk >/dev/null
-          unzip -Z1 dist-android-wrap/thrash-machine-android-wrap.apk | grep -Fx assets/game.love >/dev/null
+          SPIN_CHARA_OUTPUT_DIR=dist-android-wrap ./tools/build_android_wrap.sh
+          test -s dist-android-wrap/spin-chara-android-wrap.apk
+          unzip -t dist-android-wrap/spin-chara-android-wrap.apk >/dev/null
+          unzip -Z1 dist-android-wrap/spin-chara-android-wrap.apk | grep -Fx assets/game.love >/dev/null

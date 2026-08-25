@@ -1,7 +1,7 @@
 # Shared wiring for the build scripts: locate LÖVE (the user already has it
 # to run the mod) and run build-helper/main.lua — no Python needed.
 #
-# Source this after setting THRASH_MACHINE_MOD_DIR.
+# Source this after setting SPIN_CHARA_MOD_DIR.
 
 # --- severity-labeled output ---------------------------------------------------
 # Info messages keep the caller's prefix (log); warnings and errors are labeled
@@ -34,9 +34,9 @@ resolve_love() {
     return 1
 }
 
-THRASH_MACHINE_LOVE="${THRASH_MACHINE_LOVE:-}"
-if [ -z "$THRASH_MACHINE_LOVE" ]; then
-    THRASH_MACHINE_LOVE="$(resolve_love)" || {
+SPIN_CHARA_LOVE="${SPIN_CHARA_LOVE:-}"
+if [ -z "$SPIN_CHARA_LOVE" ]; then
+    SPIN_CHARA_LOVE="$(resolve_love)" || {
         fail 'Missing required command: love (LÖVE). Install it from https://love2d.org'
     }
 fi
@@ -50,17 +50,17 @@ fi
 # Resolution is local-first: nearest engine by walking up from the mod root
 # (the "mod inside engine/mods/" layout) wins, so a mod living inside its own
 # engine fork is never hijacked by a KRISTAL_ROOT inherited from the shell
-# profile; explicit KRISTAL_ROOT / THRASH_MACHINE_KRISTAL_DIR are only a
+# profile; explicit KRISTAL_ROOT / SPIN_CHARA_KRISTAL_DIR are only a
 # fallback for mods outside an engine tree; finally <mod>/.tools (a Linux
 # template without a shared engine; .tools is untouched by `clean-build`, and
-# Linux PHYSFS resolves the symlinks fine). Set THRASH_MACHINE_TOOLS_DIR to
+# Linux PHYSFS resolves the symlinks fine). Set SPIN_CHARA_TOOLS_DIR to
 # pin the location explicitly.
 detect_kristal_root() {
     local candidate dir parent
     # Local-first, mirroring bin/kristal-run: the nearest engine by walking up
     # from the mod root wins, so a mod inside its own engine fork is never
     # hijacked by a KRISTAL_ROOT inherited from the shell profile.
-    dir="$THRASH_MACHINE_MOD_DIR"
+    dir="$SPIN_CHARA_MOD_DIR"
     while :; do
         if [ -f "$dir/main.lua" ] && [ -f "$dir/src/kristal.lua" ]; then
             printf '%s\n' "$dir"; return 0
@@ -71,20 +71,20 @@ detect_kristal_root() {
     done
     # Explicit env vars are only a fallback for mods outside an engine tree.
     # `:-` keeps this safe when sourced by a `set -u` script (build_*.sh all do).
-    for candidate in "${KRISTAL_ROOT:-}" "${THRASH_MACHINE_KRISTAL_DIR:-}"; do
+    for candidate in "${KRISTAL_ROOT:-}" "${SPIN_CHARA_KRISTAL_DIR:-}"; do
         [ -n "$candidate" ] || continue
-        # THRASH_MACHINE_KRISTAL_DIR defaults to the mod-root clone
+        # SPIN_CHARA_KRISTAL_DIR defaults to the mod-root clone
         # .build/Kristal — inside the mod, not a shared host. Skip it.
-        [ "$candidate" = "$THRASH_MACHINE_MOD_DIR/.build/Kristal" ] && continue
+        [ "$candidate" = "$SPIN_CHARA_MOD_DIR/.build/Kristal" ] && continue
         [ -f "$candidate/main.lua" ] && { printf '%s\n' "$candidate"; return 0; }
     done
     return 1
 }
-THRASH_MACHINE_TOOLS_DIR="${THRASH_MACHINE_TOOLS_DIR:-}"
-if [ -z "$THRASH_MACHINE_TOOLS_DIR" ]; then
+SPIN_CHARA_TOOLS_DIR="${SPIN_CHARA_TOOLS_DIR:-}"
+if [ -z "$SPIN_CHARA_TOOLS_DIR" ]; then
     _kr="$(detect_kristal_root || true)"
-    THRASH_MACHINE_TOOLS_DIR="${_kr:+$_kr/.tools}"
-    : "${THRASH_MACHINE_TOOLS_DIR:=$THRASH_MACHINE_MOD_DIR/.tools}"
+    SPIN_CHARA_TOOLS_DIR="${_kr:+$_kr/.tools}"
+    : "${SPIN_CHARA_TOOLS_DIR:=$SPIN_CHARA_MOD_DIR/.tools}"
 fi
 
 # Native Windows binaries (love.exe) cannot open msys-style paths such as
@@ -104,11 +104,11 @@ win_path() {
 
 # Open a directory in the platform's file manager (Windows → explorer, Linux →
 # xdg-open, macOS → open). Best-effort and non-fatal: skipped in non-interactive
-# shells (CI never pops a window) and when THRASH_MACHINE_NO_OPEN_DIR=1 (the
+# shells (CI never pops a window) and when SPIN_CHARA_NO_OPEN_DIR=1 (the
 # Android launchers set it for the nested build_standalone.sh subprocess so it
 # does not open an internal staging dir). Only warns when the opener is missing.
 open_output_dir() {
-    [ "${THRASH_MACHINE_NO_OPEN_DIR:-0}" = "1" ] && return 0
+    [ "${SPIN_CHARA_NO_OPEN_DIR:-0}" = "1" ] && return 0
     [ -t 1 ] || [ -t 2 ] || return 0
     local dir="$1"
     [ -d "$dir" ] || { warn "输出目录不存在，无法打开: $dir"; return 0; }
@@ -157,8 +157,8 @@ run_helper() {
     for arg in "$@"; do
         win_path "$arg" >> "$args_file"
     done
-    THRASH_MACHINE_HELPER_ARGS="$(win_path "$args_file")" \
-        "$THRASH_MACHINE_LOVE" "$THRASH_MACHINE_MOD_DIR/build-helper"
+    SPIN_CHARA_HELPER_ARGS="$(win_path "$args_file")" \
+        "$SPIN_CHARA_LOVE" "$SPIN_CHARA_MOD_DIR/build-helper"
     status=$?
     rm -f "$args_file"
     return $status
@@ -197,7 +197,7 @@ zip_dir() {
 
     # The zip invocations below run in a subshell after cd'ing into the
     # source directory, so resolve a relative output path against the caller's
-    # working directory first (CI passes e.g. THRASH_MACHINE_OUTPUT_DIR=dist-win).
+    # working directory first (CI passes e.g. SPIN_CHARA_OUTPUT_DIR=dist-win).
     case "$output" in
         /*) ;;
         *) output="$(pwd -P)/$output" ;;
@@ -233,9 +233,9 @@ zip_dir() {
     else
         # No system `zip` (Git Bash has none) — this is a normal fallback, not
         # an error. Warn once per run so repeated archives stay quiet.
-        if [ "${THRASH_MACHINE_ZIP_FALLBACK_WARNED:-0}" != "1" ]; then
+        if [ "${SPIN_CHARA_ZIP_FALLBACK_WARNED:-0}" != "1" ]; then
             warn "未找到系统 zip，改用 LÖVE 内置压缩助手（正常，构建继续）"
-            THRASH_MACHINE_ZIP_FALLBACK_WARNED=1
+            SPIN_CHARA_ZIP_FALLBACK_WARNED=1
         fi
         run_helper zip-dir "$output" "$source" "$prefix"
         printf '[build] zip %s: done (LÖVE helper)\n' "$(basename "$output")" >&2
@@ -244,14 +244,14 @@ zip_dir() {
 
 # --- portable JDK (used by the Android build scripts) -------------------------
 # A pristine machine usually has no JDK. When the caller did not pin one via
-# THRASH_MACHINE_ANDROID_JAVA_HOME/JAVA_HOME and no usable `java` is on PATH,
-# ensure_java downloads a portable Temurin JDK 17 into $THRASH_MACHINE_TOOLS_DIR/jdk17
+# SPIN_CHARA_ANDROID_JAVA_HOME/JAVA_HOME and no usable `java` is on PATH,
+# ensure_java downloads a portable Temurin JDK 17 into $SPIN_CHARA_TOOLS_DIR/jdk17
 # (the shared tools dir outside the mod tree) and exports JAVA_HOME/PATH. Disable
-# the download with THRASH_MACHINE_FETCH_JDK=0.
+# the download with SPIN_CHARA_FETCH_JDK=0.
 # These functions use the warn/fail helpers defined at the top of this file, so
 # the sourcing scripts do not need to define their own before sourcing.
-THRASH_MACHINE_JDK_DIR="${THRASH_MACHINE_JDK_DIR:-$THRASH_MACHINE_TOOLS_DIR/jdk17}"
-THRASH_MACHINE_FETCH_JDK="${THRASH_MACHINE_FETCH_JDK:-1}"
+SPIN_CHARA_JDK_DIR="${SPIN_CHARA_JDK_DIR:-$SPIN_CHARA_TOOLS_DIR/jdk17}"
+SPIN_CHARA_FETCH_JDK="${SPIN_CHARA_FETCH_JDK:-1}"
 
 java_major() {
     # Quoted and unquoted variants: real JDKs print `version "17.0.11"` (with
@@ -271,7 +271,7 @@ java_major() {
 # Exits 1 with a clear message when nothing usable is available.
 ensure_java() {
     local exact="${1:-}" version="${1:-17}" java_home major
-    java_home="${THRASH_MACHINE_ANDROID_JAVA_HOME:-${JAVA_HOME:-}}"
+    java_home="${SPIN_CHARA_ANDROID_JAVA_HOME:-${JAVA_HOME:-}}"
     if [ -n "$java_home" ]; then
         [ -x "$java_home/bin/java" ] || {
             fail "Configured Java home has no Java executable: $java_home"
@@ -279,7 +279,7 @@ ensure_java() {
         if [ -n "$exact" ]; then
             major="$(java_major "$java_home/bin/java")"
             [ "$major" = "$exact" ] || {
-                fail "Java $exact required, found ${major:-unknown} at $java_home (set THRASH_MACHINE_ANDROID_JAVA_HOME to a JDK $exact)"
+                fail "Java $exact required, found ${major:-unknown} at $java_home (set SPIN_CHARA_ANDROID_JAVA_HOME to a JDK $exact)"
             }
         fi
         export JAVA_HOME="$java_home"
@@ -299,7 +299,7 @@ ensure_java() {
         fi
     fi
     install_portable_jdk "$version"
-    export JAVA_HOME="$THRASH_MACHINE_JDK_DIR"
+    export JAVA_HOME="$SPIN_CHARA_JDK_DIR"
     export PATH="$JAVA_HOME/bin:$PATH"
 }
 
@@ -310,17 +310,17 @@ use_path_java() {
 }
 
 # Download + unpack a Temurin JDK of the given major version into
-# THRASH_MACHINE_JDK_DIR (archive cached in .build/cache). Reuses an existing
+# SPIN_CHARA_JDK_DIR (archive cached in .build/cache). Reuses an existing
 # installation instead of re-downloading ~190 MB every build.
 install_portable_jdk() {
-    local version="$1" dest="$THRASH_MACHINE_JDK_DIR"
+    local version="$1" dest="$SPIN_CHARA_JDK_DIR"
     # Windows JDKs ship bin/java.exe, POSIX ones bin/java — accept either.
     if [ -x "$dest/bin/java" ] || [ -x "$dest/bin/java.exe" ]; then
         printf 'JDK %s 已存在: %s\n' "$version" "$dest" >&2
         return 0
     fi
-    [ "$THRASH_MACHINE_FETCH_JDK" = "1" ] || {
-        fail "No JDK $version found and THRASH_MACHINE_FETCH_JDK=0; install JDK $version or set THRASH_MACHINE_ANDROID_JAVA_HOME"
+    [ "$SPIN_CHARA_FETCH_JDK" = "1" ] || {
+        fail "No JDK $version found and SPIN_CHARA_FETCH_JDK=0; install JDK $version or set SPIN_CHARA_ANDROID_JAVA_HOME"
     }
     local os arch cache url cd_out archive extract top
     case "$(uname -s)" in
@@ -337,7 +337,7 @@ install_portable_jdk() {
     command -v curl >/dev/null 2>&1 || fail 'curl is required to download the portable JDK'
     command -v unzip >/dev/null 2>&1 || fail 'unzip is required to unpack the portable JDK'
 
-    cache="$THRASH_MACHINE_MOD_DIR/.build/cache"
+    cache="$SPIN_CHARA_MOD_DIR/.build/cache"
     mkdir -p "$cache"
     url="https://api.adoptium.net/v3/binary/latest/${version}/ga/${os}/${arch}/jdk/hotspot/normal/eclipse"
     printf '下载便携 JDK %s（Temurin %s/%s，约 190 MB）…\n' "$version" "$os" "$arch" >&2

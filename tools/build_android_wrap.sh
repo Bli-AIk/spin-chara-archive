@@ -18,24 +18,24 @@ set -euo pipefail
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 # Scripts live in tools/; the mod root is one level up.
-THRASH_MACHINE_MOD_DIR="${THRASH_MACHINE_MOD_DIR:-$(CDPATH= cd -- "$(dirname -- "$SCRIPT_DIR")" && pwd -P)}"
-THRASH_MACHINE_MOD_DIR="$(CDPATH= cd -- "$THRASH_MACHINE_MOD_DIR" && pwd -P)"
-THRASH_MACHINE_OUTPUT_DIR="${THRASH_MACHINE_OUTPUT_DIR:-$THRASH_MACHINE_MOD_DIR/dist}"
-THRASH_MACHINE_CACHE_DIR="${THRASH_MACHINE_CACHE_DIR:-$THRASH_MACHINE_MOD_DIR/.build/cache}"
-THRASH_MACHINE_ANDROID_WORK_DIR="${THRASH_MACHINE_ANDROID_WORK_DIR:-$THRASH_MACHINE_MOD_DIR/.build/android-wrap}"
-THRASH_MACHINE_OUTPUT_BASENAME="${THRASH_MACHINE_OUTPUT_BASENAME:-thrash-machine}"
+SPIN_CHARA_MOD_DIR="${SPIN_CHARA_MOD_DIR:-$(CDPATH= cd -- "$(dirname -- "$SCRIPT_DIR")" && pwd -P)}"
+SPIN_CHARA_MOD_DIR="$(CDPATH= cd -- "$SPIN_CHARA_MOD_DIR" && pwd -P)"
+SPIN_CHARA_OUTPUT_DIR="${SPIN_CHARA_OUTPUT_DIR:-$SPIN_CHARA_MOD_DIR/dist}"
+SPIN_CHARA_CACHE_DIR="${SPIN_CHARA_CACHE_DIR:-$SPIN_CHARA_MOD_DIR/.build/cache}"
+SPIN_CHARA_ANDROID_WORK_DIR="${SPIN_CHARA_ANDROID_WORK_DIR:-$SPIN_CHARA_MOD_DIR/.build/android-wrap}"
+SPIN_CHARA_OUTPUT_BASENAME="${SPIN_CHARA_OUTPUT_BASENAME:-spin-chara}"
 
 # Official LÖVE 11.5a embed APK (universal: arm64-v8a + armeabi-v7a).
-THRASH_MACHINE_ANDROID_EMBED_APK_URL="${THRASH_MACHINE_ANDROID_EMBED_APK_URL:-https://github.com/love2d/love-android/releases/download/11.5a/love-11.5-android-embed.apk}"
-THRASH_MACHINE_ANDROID_EMBED_APK="${THRASH_MACHINE_ANDROID_EMBED_APK:-}"
-THRASH_MACHINE_ANDROID_EMBED_APK_SHA256="${THRASH_MACHINE_ANDROID_EMBED_APK_SHA256:-dcf71c1b54c5b5a09598ef1e6cf4852ced5e5e612de3d0f30cfdd39b5014e889}"
-THRASH_MACHINE_ANDROID_BUILD_TOOLS_VERSION="${THRASH_MACHINE_ANDROID_BUILD_TOOLS_VERSION:-34.0.0}"
-THRASH_MACHINE_ANDROID_BUILD_TOOLS_DIR="${THRASH_MACHINE_ANDROID_BUILD_TOOLS_DIR:-}"
+SPIN_CHARA_ANDROID_EMBED_APK_URL="${SPIN_CHARA_ANDROID_EMBED_APK_URL:-https://github.com/love2d/love-android/releases/download/11.5a/love-11.5-android-embed.apk}"
+SPIN_CHARA_ANDROID_EMBED_APK="${SPIN_CHARA_ANDROID_EMBED_APK:-}"
+SPIN_CHARA_ANDROID_EMBED_APK_SHA256="${SPIN_CHARA_ANDROID_EMBED_APK_SHA256:-dcf71c1b54c5b5a09598ef1e6cf4852ced5e5e612de3d0f30cfdd39b5014e889}"
+SPIN_CHARA_ANDROID_BUILD_TOOLS_VERSION="${SPIN_CHARA_ANDROID_BUILD_TOOLS_VERSION:-34.0.0}"
+SPIN_CHARA_ANDROID_BUILD_TOOLS_DIR="${SPIN_CHARA_ANDROID_BUILD_TOOLS_DIR:-}"
 
 # Explicit Kristal source settings keep their normal precedence. Without an
 # override, build_standalone uses the pinned 0.11.0-dev commit without a prompt.
-THRASH_MACHINE_KRISTAL_SOURCE="${THRASH_MACHINE_KRISTAL_SOURCE:-}"
-THRASH_MACHINE_KRISTAL_REF="${THRASH_MACHINE_KRISTAL_REF:-}"
+SPIN_CHARA_KRISTAL_SOURCE="${SPIN_CHARA_KRISTAL_SOURCE:-}"
+SPIN_CHARA_KRISTAL_REF="${SPIN_CHARA_KRISTAL_REF:-}"
 
 log() {
     printf '[android-wrap] %s\n' "$*" >&2
@@ -58,12 +58,12 @@ is_windows_host() {
 }
 
 # shellcheck source=build-helper/lib.sh
-source "$THRASH_MACHINE_MOD_DIR/build-helper/lib.sh"
+source "$SPIN_CHARA_MOD_DIR/build-helper/lib.sh"
 
 # --- Java -------------------------------------------------------------------
 resolve_java() {
     # Keep this aligned with the source build and the native Windows path.
-    # A portable JDK 17 is downloaded into $THRASH_MACHINE_TOOLS_DIR/jdk17
+    # A portable JDK 17 is downloaded into $SPIN_CHARA_TOOLS_DIR/jdk17
     # (the shared tools dir outside the mod tree) when none is configured.
     ensure_java 17
     need_cmd keytool
@@ -72,22 +72,22 @@ resolve_java() {
 
 # --- Official embed APK ------------------------------------------------------
 ensure_embed_apk() {
-    local apk="$THRASH_MACHINE_ANDROID_EMBED_APK"
+    local apk="$SPIN_CHARA_ANDROID_EMBED_APK"
     if [ -n "$apk" ]; then
         [ -f "$apk" ] || fail "Embed APK does not exist: $apk"
         printf '%s\n' "$apk"
         return 0
     fi
-    mkdir -p "$THRASH_MACHINE_CACHE_DIR"
-    apk="$THRASH_MACHINE_CACHE_DIR/$(basename "$THRASH_MACHINE_ANDROID_EMBED_APK_URL")"
+    mkdir -p "$SPIN_CHARA_CACHE_DIR"
+    apk="$SPIN_CHARA_CACHE_DIR/$(basename "$SPIN_CHARA_ANDROID_EMBED_APK_URL")"
     if [ ! -f "$apk" ]; then
         log "下载官方 LÖVE embed APK（约 7 MB）…"
-        curl --fail --location --output "$apk" "$THRASH_MACHINE_ANDROID_EMBED_APK_URL"
+        curl --fail --location --output "$apk" "$SPIN_CHARA_ANDROID_EMBED_APK_URL"
     fi
-    if [ -n "$THRASH_MACHINE_ANDROID_EMBED_APK_SHA256" ]; then
+    if [ -n "$SPIN_CHARA_ANDROID_EMBED_APK_SHA256" ]; then
         actual="$(sha256sum "$apk" | awk '{print $1}')"
-        [ "$actual" = "$THRASH_MACHINE_ANDROID_EMBED_APK_SHA256" ] || fail \
-            "Embed APK checksum mismatch: expected $THRASH_MACHINE_ANDROID_EMBED_APK_SHA256, got $actual"
+        [ "$actual" = "$SPIN_CHARA_ANDROID_EMBED_APK_SHA256" ] || fail \
+            "Embed APK checksum mismatch: expected $SPIN_CHARA_ANDROID_EMBED_APK_SHA256, got $actual"
     fi
     printf '%s\n' "$apk"
 }
@@ -95,16 +95,16 @@ ensure_embed_apk() {
 # --- Android build-tools (zipalign + apksigner) ------------------------------
 resolve_build_tools_dir() {
     local dir
-    if [ -n "$THRASH_MACHINE_ANDROID_BUILD_TOOLS_DIR" ]; then
-        dir="$THRASH_MACHINE_ANDROID_BUILD_TOOLS_DIR"
+    if [ -n "$SPIN_CHARA_ANDROID_BUILD_TOOLS_DIR" ]; then
+        dir="$SPIN_CHARA_ANDROID_BUILD_TOOLS_DIR"
         if [ -f "$dir/zipalign" ] || [ -f "$dir/zipalign.exe" ]; then
             printf '%s\n' "$dir"
             return 0
         fi
-        fail "THRASH_MACHINE_ANDROID_BUILD_TOOLS_DIR has no zipalign: $dir"
+        fail "SPIN_CHARA_ANDROID_BUILD_TOOLS_DIR has no zipalign: $dir"
     fi
     if [ -n "${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}" ]; then
-        dir="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}/build-tools/$THRASH_MACHINE_ANDROID_BUILD_TOOLS_VERSION"
+        dir="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}/build-tools/$SPIN_CHARA_ANDROID_BUILD_TOOLS_VERSION"
         if [ -f "$dir/zipalign" ] || [ -f "$dir/zipalign.exe" ]; then
             printf '%s\n' "$dir"
             return 0
@@ -119,11 +119,11 @@ resolve_build_tools_dir() {
         MINGW*|MSYS*|CYGWIN*) os=windows ;;
         *) fail "Unsupported OS for auto-downloaded build-tools: $(uname -s)" ;;
     esac
-    major="${THRASH_MACHINE_ANDROID_BUILD_TOOLS_VERSION%%.*}"
-    zip="$THRASH_MACHINE_CACHE_DIR/build-tools_r${major}-${os}.zip"
-    dest="$THRASH_MACHINE_ANDROID_WORK_DIR/build-tools/$THRASH_MACHINE_ANDROID_BUILD_TOOLS_VERSION"
+    major="${SPIN_CHARA_ANDROID_BUILD_TOOLS_VERSION%%.*}"
+    zip="$SPIN_CHARA_CACHE_DIR/build-tools_r${major}-${os}.zip"
+    dest="$SPIN_CHARA_ANDROID_WORK_DIR/build-tools/$SPIN_CHARA_ANDROID_BUILD_TOOLS_VERSION"
     if [ ! -f "$zip" ]; then
-        log "下载 Android build-tools ${THRASH_MACHINE_ANDROID_BUILD_TOOLS_VERSION}（约 60 MB）…"
+        log "下载 Android build-tools ${SPIN_CHARA_ANDROID_BUILD_TOOLS_VERSION}（约 60 MB）…"
         curl --fail --location --output "$zip" \
             "https://dl.google.com/android/repository/build-tools_r${major}-${os}.zip"
     fi
@@ -144,28 +144,28 @@ resolve_build_tools_dir() {
 
 # --- release .love ------------------------------------------------------------
 build_love_archive() {
-    local love_output="$THRASH_MACHINE_ANDROID_WORK_DIR/love"
+    local love_output="$SPIN_CHARA_ANDROID_WORK_DIR/love"
     rm -rf "$love_output"
     mkdir -p "$love_output"
-    THRASH_MACHINE_MOD_DIR="$THRASH_MACHINE_MOD_DIR" \
-        THRASH_MACHINE_ANDROID_TOUCH_SKIP_INTRO=1 \
-        THRASH_MACHINE_BUILD_VARIANTS=release \
-        THRASH_MACHINE_BUILD_WINDOWS_EXE=0 \
-        THRASH_MACHINE_OUTPUT_DIR="$love_output" \
-        THRASH_MACHINE_KRISTAL_SOURCE="$THRASH_MACHINE_KRISTAL_SOURCE" \
-        THRASH_MACHINE_KRISTAL_REF="$THRASH_MACHINE_KRISTAL_REF" \
-        THRASH_MACHINE_NO_OPEN_DIR=1 \
-        "$THRASH_MACHINE_MOD_DIR/tools/build_standalone.sh"
-    [ -s "$love_output/${THRASH_MACHINE_OUTPUT_BASENAME}-release.love" ] || fail \
+    SPIN_CHARA_MOD_DIR="$SPIN_CHARA_MOD_DIR" \
+        SPIN_CHARA_ANDROID_TOUCH_SKIP_INTRO=1 \
+        SPIN_CHARA_BUILD_VARIANTS=release \
+        SPIN_CHARA_BUILD_WINDOWS_EXE=0 \
+        SPIN_CHARA_OUTPUT_DIR="$love_output" \
+        SPIN_CHARA_KRISTAL_SOURCE="$SPIN_CHARA_KRISTAL_SOURCE" \
+        SPIN_CHARA_KRISTAL_REF="$SPIN_CHARA_KRISTAL_REF" \
+        SPIN_CHARA_NO_OPEN_DIR=1 \
+        "$SPIN_CHARA_MOD_DIR/tools/build_standalone.sh"
+    [ -s "$love_output/${SPIN_CHARA_OUTPUT_BASENAME}-release.love" ] || fail \
         "The release .love archive was not created"
-    printf '%s\n' "$love_output/${THRASH_MACHINE_OUTPUT_BASENAME}-release.love"
+    printf '%s\n' "$love_output/${SPIN_CHARA_OUTPUT_BASENAME}-release.love"
 }
 
 # --- swap assets/game.love ----------------------------------------------------
 replace_game_love() {
     local apk="$1" love="$2" work_dir ps1
 
-    work_dir="$THRASH_MACHINE_ANDROID_WORK_DIR/swap"
+    work_dir="$SPIN_CHARA_ANDROID_WORK_DIR/swap"
     rm -rf "$work_dir"
     mkdir -p "$work_dir/assets"
 
@@ -179,7 +179,7 @@ replace_game_love() {
         # Git Bash has no `zip`; use .NET's ZipArchive in Update mode. Existing
         # entries (resources.arsc, lib/*.so) are copied byte-for-byte and the
         # new game.love is written DEFLATE, so nothing needs manual alignment.
-        ps1="$THRASH_MACHINE_ANDROID_WORK_DIR/replace_game_love.ps1"
+        ps1="$SPIN_CHARA_ANDROID_WORK_DIR/replace_game_love.ps1"
         cat > "$ps1" <<'PS_EOF'
 param(
     [Parameter(Mandatory = $true)][string]$Apk,
@@ -226,20 +226,20 @@ PS_EOF
 
 # --- signing -------------------------------------------------------------------
 resolve_keystore() {
-    if [ -n "${THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE:-}" ]; then
-        [ -f "$THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE" ] || fail \
-            "Android signing keystore does not exist: $THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE"
-        [ -n "${THRASH_MACHINE_ANDROID_SIGNING_STORE_PASSWORD:-}" ] || fail \
-            "THRASH_MACHINE_ANDROID_SIGNING_STORE_PASSWORD is required with a custom Android keystore"
-        [ -n "${THRASH_MACHINE_ANDROID_SIGNING_KEY_ALIAS:-}" ] || fail \
-            "THRASH_MACHINE_ANDROID_SIGNING_KEY_ALIAS is required with a custom Android keystore"
-        [ -n "${THRASH_MACHINE_ANDROID_SIGNING_KEY_PASSWORD:-}" ] || fail \
-            "THRASH_MACHINE_ANDROID_SIGNING_KEY_PASSWORD is required with a custom Android keystore"
-        THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE="$(CDPATH= cd -- "$(dirname -- "$THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE")" && pwd -P)/$(basename -- "$THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE")"
+    if [ -n "${SPIN_CHARA_ANDROID_SIGNING_KEYSTORE:-}" ]; then
+        [ -f "$SPIN_CHARA_ANDROID_SIGNING_KEYSTORE" ] || fail \
+            "Android signing keystore does not exist: $SPIN_CHARA_ANDROID_SIGNING_KEYSTORE"
+        [ -n "${SPIN_CHARA_ANDROID_SIGNING_STORE_PASSWORD:-}" ] || fail \
+            "SPIN_CHARA_ANDROID_SIGNING_STORE_PASSWORD is required with a custom Android keystore"
+        [ -n "${SPIN_CHARA_ANDROID_SIGNING_KEY_ALIAS:-}" ] || fail \
+            "SPIN_CHARA_ANDROID_SIGNING_KEY_ALIAS is required with a custom Android keystore"
+        [ -n "${SPIN_CHARA_ANDROID_SIGNING_KEY_PASSWORD:-}" ] || fail \
+            "SPIN_CHARA_ANDROID_SIGNING_KEY_PASSWORD is required with a custom Android keystore"
+        SPIN_CHARA_ANDROID_SIGNING_KEYSTORE="$(CDPATH= cd -- "$(dirname -- "$SPIN_CHARA_ANDROID_SIGNING_KEYSTORE")" && pwd -P)/$(basename -- "$SPIN_CHARA_ANDROID_SIGNING_KEYSTORE")"
         return 0
     fi
 
-    local keystore="$THRASH_MACHINE_ANDROID_WORK_DIR/debug.keystore"
+    local keystore="$SPIN_CHARA_ANDROID_WORK_DIR/debug.keystore"
     if [ ! -f "$keystore" ]; then
         log "生成调试签名密钥库（.build/android-wrap/debug.keystore）…"
         keytool -genkeypair \
@@ -250,10 +250,10 @@ resolve_keystore() {
             -dname "CN=Android Debug,O=Android,C=US" \
             -keyalg RSA -keysize 2048 -validity 10000
     fi
-    THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE="$keystore"
-    THRASH_MACHINE_ANDROID_SIGNING_STORE_PASSWORD=android
-    THRASH_MACHINE_ANDROID_SIGNING_KEY_ALIAS=androiddebugkey
-    THRASH_MACHINE_ANDROID_SIGNING_KEY_PASSWORD=android
+    SPIN_CHARA_ANDROID_SIGNING_KEYSTORE="$keystore"
+    SPIN_CHARA_ANDROID_SIGNING_STORE_PASSWORD=android
+    SPIN_CHARA_ANDROID_SIGNING_KEY_ALIAS=androiddebugkey
+    SPIN_CHARA_ANDROID_SIGNING_KEY_PASSWORD=android
 }
 
 # --- main ----------------------------------------------------------------------
@@ -276,9 +276,9 @@ main() {
     apksigner_jar="$bt_dir/lib/apksigner.jar"
     [ -f "$apksigner_jar" ] || fail "apksigner.jar not found under $bt_dir"
 
-    mkdir -p "$THRASH_MACHINE_ANDROID_WORK_DIR" "$THRASH_MACHINE_OUTPUT_DIR"
-    apk_unsigned="$THRASH_MACHINE_ANDROID_WORK_DIR/unsigned.apk"
-    apk_aligned="$THRASH_MACHINE_ANDROID_WORK_DIR/aligned.apk"
+    mkdir -p "$SPIN_CHARA_ANDROID_WORK_DIR" "$SPIN_CHARA_OUTPUT_DIR"
+    apk_unsigned="$SPIN_CHARA_ANDROID_WORK_DIR/unsigned.apk"
+    apk_aligned="$SPIN_CHARA_ANDROID_WORK_DIR/aligned.apk"
     cp "$embed_apk" "$apk_unsigned"
 
     log "替换 assets/game.love 为 release .love …"
@@ -288,12 +288,12 @@ main() {
     "$zipalign" -f 4 "$apk_unsigned" "$apk_aligned"
 
     resolve_keystore
-    apk_output="$THRASH_MACHINE_OUTPUT_DIR/${THRASH_MACHINE_OUTPUT_BASENAME}-android-wrap.apk"
+    apk_output="$SPIN_CHARA_OUTPUT_DIR/${SPIN_CHARA_OUTPUT_BASENAME}-android-wrap.apk"
     log "apksigner 签名…"
     java -jar "$apksigner_jar" sign \
-        --ks "$THRASH_MACHINE_ANDROID_SIGNING_KEYSTORE" \
-        --ks-pass "pass:$THRASH_MACHINE_ANDROID_SIGNING_STORE_PASSWORD" \
-        --key-pass "pass:$THRASH_MACHINE_ANDROID_SIGNING_KEY_PASSWORD" \
+        --ks "$SPIN_CHARA_ANDROID_SIGNING_KEYSTORE" \
+        --ks-pass "pass:$SPIN_CHARA_ANDROID_SIGNING_STORE_PASSWORD" \
+        --key-pass "pass:$SPIN_CHARA_ANDROID_SIGNING_KEY_PASSWORD" \
         --v4-signing-enabled false \
         --out "$apk_output" \
         "$apk_aligned"
@@ -305,7 +305,7 @@ main() {
     log "Created Android wrapper APK: $apk_output"
     log "提示：包 id 仍为 org.love2d.android，安装前请先卸载官方 LÖVE；"
     log "      此套包不能上架 Google Play（需要 AAB），也不能改图标/名称/applicationId。"
-    open_output_dir "$THRASH_MACHINE_OUTPUT_DIR"
+    open_output_dir "$SPIN_CHARA_OUTPUT_DIR"
 }
 
 main "$@"

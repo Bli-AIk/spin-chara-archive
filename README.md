@@ -1,9 +1,9 @@
-# Thrash Machine
+# spin-chara
 
-[![license](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](LICENSE-APACHE) <img src="https://img.shields.io/github/repo-size/Bli-AIk/thrash-machine.svg"/> <img src="https://img.shields.io/github/last-commit/Bli-AIk/thrash-machine.svg"/> <img src="https://img.shields.io/github/v/release/Bli-AIk/thrash-machine.svg"/> <br>
+[![license](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](LICENSE-APACHE) <img src="https://img.shields.io/github/repo-size/Bli-AIk/spin-chara.svg"/> <img src="https://img.shields.io/github/last-commit/Bli-AIk/spin-chara.svg"/> <img src="https://img.shields.io/github/v/release/Bli-AIk/spin-chara.svg"/> <br>
 <img src="https://img.shields.io/badge/Deltarune-001225?style=for-the-badge&labelColor=001225&logo=undertale&logoColor=ff0000" /> <img src="https://img.shields.io/badge/Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white" /> <img src="https://img.shields.io/badge/Kristal-FF6B35?style=for-the-badge&logo=love2d&logoColor=white" />
 
-**Thrash Machine** — 一个便于开发的 Kristal 模板：把我维护的本地化、对象编辑器、调试工具等实用包都整合成了子模块，拿来就能开工。
+**spin-chara** — 一个便于开发的 Kristal 模板：把我维护的本地化、对象编辑器、调试工具等实用包都整合成了子模块，拿来就能开工。
 
 | 简体中文 | English                 |
 | -------- | ----------------------- |
@@ -11,7 +11,7 @@
 
 ## Kristal 版本支持
 
-| `kristal`                                                                                                                     | `thrash-machine` |
+| `kristal`                                                                                                                     | `spin-chara` |
 | ----------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | [v0.11.0-dev](https://github.com/KristalTeam/Kristal/commit/f62afea63ccab02f468c24ac0d096bd8a2c9aa81) (`f62afea`, 2026-08-16) | v0.2.0 - v0.3.0  |
 | [v0.10.0](https://github.com/KristalTeam/Kristal/commit/752bc0688ba97ca8a256ba9125b7e05a1ca6edbd) (`752bc068`, 2026-06-23)    | v0.0.0 – v0.1.0  |
@@ -58,15 +58,15 @@ git submodule update --init libraries/MagicalGlassRedux libraries/UndertaleMonst
 
 **方式一：直接下载（快捷）**
 
-去 [Releases](https://github.com/Bli-AIk/thrash-machine/releases) 页下载 `thrash-machine-<版本>-full-source.zip`（或 `.tar.gz`）——已经拉好全部子模块的完整源码，解压即用。
+去 [Releases](https://github.com/Bli-AIk/spin-chara/releases) 页下载 `spin-chara-<版本>-full-source.zip`（或 `.tar.gz`）——已经拉好全部子模块的完整源码，解压即用。
 
 **方式二：版本管理**
 
 这是**模板仓库**：建议先点仓库主页的 **Use this template** 创建你自己的仓库（子模块引用会一并带上），再克隆你的仓库开始开发——版本历史和 Release 都归你自己。直接克隆也可以：
 
 ```sh
-git clone --recurse-submodules https://github.com/Bli-AIk/thrash-machine.git
-cd thrash-machine
+git clone --recurse-submodules https://github.com/Bli-AIk/spin-chara.git
+cd spin-chara
 ```
 
 **2. 改成你的项目**
@@ -141,7 +141,7 @@ Linux 需要 git、tar、unzip、curl、love（Arch：`sudo pacman -S love`）�
 - **套包构建**：`just build-android-wrap`，不需要 Android SDK/NDK——JDK 17、官方 LÖVE 壳和 build-tools 都自动准备；适合快速自用；代价是包名/图标/名称不能自定义，也上不了 Google Play。
 - **编译构建**：`just build-android`，从源码编译 APK，包名/图标可自定义，正式分发用它。
 
-Windows 上双击 `tools\build_android.cmd` 按提示选择即可（也支持参数：`build_android.cmd wrap` / `build_android.cmd compile`），两条路径都不用 Git Bash。JDK 解析顺序：`THRASH_MACHINE_ANDROID_JAVA_HOME` / `JAVA_HOME` 显式指定 → PATH 里版本匹配的 `java` → 自动下载便携 Temurin 17（`THRASH_MACHINE_FETCH_JDK=0` 可关闭）。
+Windows 上双击 `tools\build_android.cmd` 按提示选择即可（也支持参数：`build_android.cmd wrap` / `build_android.cmd compile`），两条路径都不用 Git Bash。JDK 解析顺序：`SPIN_CHARA_ANDROID_JAVA_HOME` / `JAVA_HOME` 显式指定 → PATH 里版本匹配的 `java` → 自动下载便携 Temurin 17（`SPIN_CHARA_FETCH_JDK=0` 可关闭）。
 
 ### GUI 打包
 
@@ -154,12 +154,12 @@ Windows 双击仓库根目录的 `gui.cmd`（其他平台 `just gui`）打开 kr
 
 ### 引擎来源
 
-构建默认固定 Kristal `f62afea63ccab02f468c24ac0d096bd8a2c9aa81`（`0.11.0-dev`，远程浅克隆到 `.build/Kristal`）。想换来源：交互终端里 `THRASH_MACHINE_KRISTAL_SOURCE=ask just build` 按提示选（本地路径 / 远程 tag / 完整 commit），或用环境变量直接指定：
+构建默认固定 Kristal `f62afea63ccab02f468c24ac0d096bd8a2c9aa81`（`0.11.0-dev`，远程浅克隆到 `.build/Kristal`）。想换来源：交互终端里 `SPIN_CHARA_KRISTAL_SOURCE=ask just build` 按提示选（本地路径 / 远程 tag / 完整 commit），或用环境变量直接指定：
 
-- `THRASH_MACHINE_KRISTAL_SOURCE=local|path|tag|commit` —— 来源类型
-- `THRASH_MACHINE_KRISTAL_DIR` / `KRISTAL_ROOT` —— 本地路径
-- `THRASH_MACHINE_KRISTAL_REF` —— tag 或 commit hash
-- `THRASH_MACHINE_KRISTAL_REPO` —— 覆盖远程仓库
+- `SPIN_CHARA_KRISTAL_SOURCE=local|path|tag|commit` —— 来源类型
+- `SPIN_CHARA_KRISTAL_DIR` / `KRISTAL_ROOT` —— 本地路径
+- `SPIN_CHARA_KRISTAL_REF` —— tag 或 commit hash
+- `SPIN_CHARA_KRISTAL_REPO` —— 覆盖远程仓库
 
 ### 自动发版
 

@@ -1,0 +1,38 @@
+{
+    "kris": {
+        "en": "Kris",
+        "zh_hans": "克里斯"
+    },
+    "susie": {
+        "en": "Susie",
+        "zh_hans": "苏西"
+    },
+    "ralsei": {
+        "en": "Ralsei",
+        "zh_hans": "利艾尔斯"
+    },
+    "noelle": {
+        "en": "Noelle",
+        "zh_hans": "诺艾尔"
+    },
+    "dummy": {
+        "en": "Dummy",
+        "zh_hans": "训练人偶"
+    },
+    "starwalker": {
+        "en": "Starwalker",
+        "zh_hans": "星之行者"
+    },
+    "seam": {
+        "en": "Seam",
+        "zh_hans": "桑恩"
+    },
+    "shawm": {
+        "en": "Shawm",
+        "zh_hans": "sang en"
+    },
+    "seap": {
+        "en": "Seap",
+        "zh_hans": "桑"
+    }
+}

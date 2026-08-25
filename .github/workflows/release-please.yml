@@ -1,0 +1,120 @@
+name: Release Please
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - id: release
+        uses: googleapis/release-please-action@v5
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  build-release:
+    needs: release
+    if: needs.release.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.tag_name }}
+          submodules: recursive
+      - name: Verify required submodules
+        run: |
+          set -euo pipefail
+          git submodule status --recursive
+          test -s libraries/kristal-i18n/lib.lua
+          test -s libraries/kristal-object-selector-plus/lib.lua
+          test -s libraries/terminal-cli/lib.lua
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y just jq love luajit rsync unzip xvfb zip
+      - name: Verify source
+        run: make test
+      - name: Validate release version
+        env:
+          RELEASE_TAG: ${{ needs.release.outputs.tag_name }}
+        run: |
+          version="$(python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('mod.json').read_text(encoding='utf-8')
+          match = re.search(r'(?m)^\s*"version"\s*:\s*"([^"]+)"', text)
+          if not match:
+              raise SystemExit('Could not find mod.json version')
+          print(match.group(1))
+          PY
+          )"
+          test "$version" = "$RELEASE_TAG"
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android API and NDK
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;25.2.9519653"
+
+      - name: Build release assets
+        run: |
+          just build
+          ./.github/scripts/build_mod.sh
+
+      - name: Build Android APK (compile)
+        run: ./tools/build_android.sh
+
+      - name: Package full source with submodules
+        run: |
+          set -euo pipefail
+          TAG="${{ needs.release.outputs.tag_name }}"
+          mkdir -p dist
+          # Unlike GitHub's auto-generated archives, include the checked-out
+          # submodule contents so the mod is complete and usable as-is.
+          tar --exclude='.git' --exclude='.build' --exclude='dist*' --exclude='.tools' --exclude='.worktrees' \
+            -czf "dist/thrash-machine-$TAG-full-source.tar.gz" -C "$PWD" .
+          (cd "$PWD" && zip -qr "dist/thrash-machine-$TAG-full-source.zip" . \
+            -x '.git*' '.build*' 'dist*' '.tools*' '.worktrees*')
+
+      - name: Generate and verify SHA-256 manifest
+        run: |
+          .github/scripts/generate_sha256sums.sh dist
+          (cd dist && sha256sum -c SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thrash-machine-${{ needs.release.outputs.tag_name }}
+          path: dist/
+          if-no-files-found: error
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          files=()
+          for pattern in '*.love' '*-win64.zip' '*-mod.zip' '*.apk' '*-full-source.tar.gz' '*-full-source.zip'; do
+            while IFS= read -r -d '' f; do files+=("$f"); done < <(find dist -maxdepth 1 -type f -name "$pattern" -print0)
+          done
+          files+=(dist/SHA256SUMS)
+          test "${#files[@]}" -gt 0
+          gh release upload "$RELEASE_TAG" "${files[@]}" --clobber

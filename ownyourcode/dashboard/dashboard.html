@@ -24,11 +24,11 @@
   only /own:theme (or a deliberate design change) touches the styling.
   ════════════════════════════════════════════════════════════════════
 -->
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Project Dashboard · OwnYourCode</title>
+<title>项目面板 · OwnYourCode</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -476,32 +476,32 @@
 <div class="sweep" aria-hidden="true"></div>
 
 <!-- Boot sequence -->
-<div class="boot" id="boot" role="status" aria-label="Loading dashboard">
+<div class="boot" id="boot" role="status" aria-label="仪表盘加载中">
   <div>
     <div class="boot-win">
-      <div class="boot-bar"><i></i><i></i><i></i><span>own — dashboard</span></div>
+      <div class="boot-bar"><i></i><i></i><i></i><span>own — 面板</span></div>
       <div class="boot-body" id="bootBody"></div>
     </div>
-    <div class="boot-skip">press any key to skip</div>
+    <div class="boot-skip">按任意键跳过</div>
   </div>
 </div>
 
 <div class="app">
   <header class="hd">
-    <div class="brand"><span class="ps">~/</span><b>—</b><span class="tag">project dashboard</span></div>
+    <div class="brand"><span class="ps">~/</span><b>—</b><span class="tag">项目面板</span></div>
     <div class="sp"></div>
     <span class="aud" id="hdAud" hidden>—</span>
     <span class="pill" id="gStatus">—</span>
-    <button class="palbtn" id="palBtn" aria-label="Open command palette">jump <kbd>⌘K</kbd></button>
+    <button class="palbtn" id="palBtn" aria-label="打开命令面板">跳转 <kbd>⌘K</kbd></button>
   </header>
   <aside class="sb" id="sb">
-    <div class="sb-label">Project</div>
-    <div class="nav on" data-v="overview"><span class="d" style="background:var(--accent);border-color:var(--accent)"></span>Overview</div>
-    <div class="nav" data-v="stack"><span class="d" style="background:var(--accent);border-color:var(--accent)"></span>Stack</div>
-    <div class="sb-label">Phases</div>
+    <div class="sb-label">项目</div>
+    <div class="nav on" data-v="overview"><span class="d" style="background:var(--accent);border-color:var(--accent)"></span>概览</div>
+    <div class="nav" data-v="stack"><span class="d" style="background:var(--accent);border-color:var(--accent)"></span>技术栈</div>
+    <div class="sb-label">阶段</div>
     <div id="phaseNav"></div>
     <div class="dodcard">
-      <h4>Definition of Done</h4>
+      <h4>完工定义 (Definition of Done)</h4>
       <div id="dod"></div>
       <div class="segbar" id="dodSeg"></div>
       <div class="bar-m" id="dodMeta">—</div>
@@ -513,10 +513,10 @@
 
 <!-- ⌘K palette -->
 <div class="pal" id="pal" hidden>
-  <div class="pal-box" role="dialog" aria-label="Command palette">
-    <div class="pal-top"><span class="pal-ps">~ $</span><input id="palIn" placeholder="jump to view…" autocomplete="off" spellcheck="false" /></div>
+  <div class="pal-box" role="dialog" aria-label="命令面板">
+    <div class="pal-top"><span class="pal-ps">~ $</span><input id="palIn" placeholder="跳转到视图…" autocomplete="off" spellcheck="false" /></div>
     <ul class="pal-ls" id="palLs"></ul>
-    <div class="pal-hint">↑↓ navigate · ↵ go · esc close · tip: digits 1–9 jump, [ ] cycle views</div>
+    <div class="pal-hint">↑↓ 导航 · ↵ 跳转 · esc 关闭 · 提示:数字 1–9 跳转,[ ] 循环视图</div>
   </div>
 </div>
 
@@ -532,15 +532,15 @@ const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 /* the handler accepts metaKey OR ctrlKey everywhere — this only fixes the label */
 const MODK = (typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) ? "⌘" : "Ctrl+";
 
-const AUDIENCE_LABEL = { "myself":"For: Myself", "employers":"For: Employers",
-  "clients":"For: Clients", "real-users":"For: Real users" };
+const AUDIENCE_LABEL = { "myself":"对象:我自己", "employers":"对象:雇主",
+  "clients":"对象:客户", "real-users":"对象:真实用户" };
 
 function srcBadge(source){
   const s = String(source ?? "manual");
   if (s === "package.json") return `<span class="src package-json">package.json</span>`;
   if (s.startsWith("mcp:"))  return `<span class="src mcp">MCP ${esc(s.slice(4))}</span>`;
-  if (s.startsWith("verify:")) return `<span class="src verify">verify ↗</span>`;
-  return `<span class="src manual">manual</span>`;
+  if (s.startsWith("verify:")) return `<span class="src verify">验证 ↗</span>`;
+  return `<span class="src manual">手动</span>`;
 }
 
 function renderArch(d){
@@ -593,18 +593,18 @@ function taskTotals(){
 
 function renderHeader(){
   const m = PROJECT.meta;
-  $("#palBtn").innerHTML = `jump <kbd>${MODK}K</kbd>`;
-  document.title = `${m.name} · Project Dashboard`;
+  $("#palBtn").innerHTML = `跳转 <kbd>${MODK}K</kbd>`;
+  document.title = `${m.name} · 项目面板`;
   $(".brand b").textContent = m.name;
-  $(".brand .tag").textContent = m.tagline || "project dashboard";
+  $(".brand .tag").textContent = m.tagline || "项目面板";
   if (m.audience && AUDIENCE_LABEL[m.audience]) {
     const a = $("#hdAud"); a.textContent = AUDIENCE_LABEL[m.audience]; a.hidden = false;
   }
   const cur = activePhase();
   $("#gStatus").textContent =
-    !PROJECT.phases.length ? "Ready to begin"
-    : cur ? `Phase ${cur.n} — ${cur.status === "specced" ? "specced" : "roadmap"}`
-    : "All phases complete";
+    !PROJECT.phases.length ? "准备开始"
+    : cur ? `阶段 ${cur.n} — ${cur.status === "specced" ? "已定规格" : "路线图"}`
+    : "全部阶段已完成";
 }
 
 function renderSidebar(){
@@ -613,7 +613,7 @@ function renderSidebar(){
   PROJECT.phases.forEach(p=>{
     const on = p.n===activeN;
     const d = document.createElement("div"); d.className="nav"+(on?" active-phase":""); d.dataset.v="phase-"+p.n;
-    d.innerHTML = `<span class="d ${p.status}"></span>Phase ${p.n}: ${esc(p.name)}`+(on?`<span class="atag">Active</span>`:`<span class="n">P${p.n}</span>`);
+    d.innerHTML = `<span class="d ${p.status}"></span>阶段 ${p.n}: ${esc(p.name)}`+(on?`<span class="atag">进行中</span>`:`<span class="n">P${p.n}</span>`);
     nav.appendChild(d);
   });
   const dod = $("#dod");
@@ -622,7 +622,7 @@ function renderSidebar(){
   const done = PROJECT.dod.filter(d=>d.done).length;
   const seg = $("#dodSeg");
   PROJECT.dod.forEach((x)=>{ const i=document.createElement("i"); if(x.done) i.className="on"; seg.appendChild(i); });
-  $("#dodMeta").textContent = `${done} / ${PROJECT.dod.length} complete`;
+  $("#dodMeta").textContent = `${done} / ${PROJECT.dod.length} 已完成`;
 }
 
 /* tmux bar — live status segments + clock */
@@ -633,11 +633,11 @@ function renderTmux(){
   $("#tmx").innerHTML = `
     <span class="seg brand">OWN v${esc(m.version)}</span>
     <span class="seg">~/${esc(m.name)}</span>
-    <span class="seg okk">${cur?`phase ${cur.n}/${PROJECT.phases.length}`:"all phases complete"}</span>
-    <span class="seg">tasks <b>${d}/${t}</b></span>
-    <span class="seg">dod <b>${dodPct}%</b></span>
+    <span class="seg okk">${cur?`阶段 ${cur.n}/${PROJECT.phases.length}`:"全部阶段完成"}</span>
+    <span class="seg">任务 <b>${d}/${t}</b></span>
+    <span class="seg">完工 <b>${dodPct}%</b></span>
     <span class="sp"></span>
-    <span class="seg ghost">${MODK}K jump</span>
+    <span class="seg ghost">${MODK}K 跳转</span>
     <span class="seg">${esc(m.generated)}</span>
     <span class="seg time" id="clock">—:—:—</span>`;
   const tick=()=>{ const c=$("#clock"); if(c) c.textContent=new Date().toLocaleTimeString("en-GB",{hour12:false}); };
@@ -663,8 +663,8 @@ function missionTrack(){
   const half=(50/total);
   const nodes=ps.map(p=>{
     const cls=p.status==="complete"?"complete":p.n===activeN?"active":"roadmap";
-    const meta=p.tasks?`${p.tasks.filter(t=>t.done).length}/${p.tasks.length} tasks`:`${(p.items||[]).length} planned`;
-    return `<button class="tnode ${cls}" data-v="phase-${p.n}" aria-label="Go to phase ${p.n}">
+    const meta=p.tasks?`${p.tasks.filter(t=>t.done).length}/${p.tasks.length} 任务`:`${(p.items||[]).length} 项已规划`;
+    return `<button class="tnode ${cls}" data-v="phase-${p.n}" aria-label="跳转到阶段 ${p.n}">
       <span class="tn-dot"></span><span class="tn-num">${pad2(p.n)}</span>
       <span class="tn-name">${esc(p.name)}</span><span class="tn-meta">${meta}</span></button>`;
   }).join("");
@@ -695,27 +695,27 @@ function viewOverview(){
   const {d:taskDone,t:taskTotal}=taskTotals();
   const cur = activePhase();
   let next;
-  if (!PROJECT.phases.length) next = "This dashboard is empty. Run <span class='inl'>/own:init</span> to define your mission, stack, and roadmap.";
-  else if (!cur) next = "All phases complete. Ship it 🎉";
-  else if (cur.status === "specced") next = `Phase ${cur.n} is specced. Build it, then run <span class='inl'>/own:done</span>.`;
-  else next = `Phase ${cur.n} needs a spec. Run <span class='inl'>/own:feature</span> to generate it.`;
+  if (!PROJECT.phases.length) next = "这个面板是空的。运行 <span class='inl'>/own:init</span> 来定义你的使命、技术栈和路线图。";
+  else if (!cur) next = "全部阶段已完成。交付它 🎉";
+  else if (cur.status === "specced") next = `阶段 ${cur.n} 已定规格。实现它,然后运行 <span class='inl'>/own:done</span>。`;
+  else next = `阶段 ${cur.n} 需要一份规格。运行 <span class='inl'>/own:feature</span> 来生成。`;
   let n=0;
   v.innerHTML = `
-    <div class="vhead"><div class="eye">Project Mission</div><h1>${esc(m.name)}</h1>
+    <div class="vhead"><div class="eye">项目使命</div><h1>${esc(m.name)}</h1>
       <p class="lead">${esc(m.tagline||"")}</p></div>
     <div class="bento">
-      ${tile("hero c4","<div class='k'>The problem</div><p>"+esc(m.mission)+"</p><div class='prompt-line'>own the code you ship</div>",n++)}
-      ${tile("stat c2 accent","<span class='num' data-count='"+PROJECT.phases.length+"'>0</span><span class='lbl'>Roadmap phases</span>",n++)}
-      ${tile("stat c2","<span class='num' data-count='"+taskTotal+"'>0</span><span class='lbl'>Tasks specced</span>",n++)}
-      ${tile("stat c2","<span class='num' data-count='"+taskDone+"'>0</span><span class='lbl'>Tasks complete</span>",n++)}
-      ${tile("c2","<div class='k'>Next action</div><p>"+next+"</p>",n++)}
+      ${tile("hero c4","<div class='k'>核心问题</div><p>"+esc(m.mission)+"</p><div class='prompt-line'>own the code you ship</div>",n++)}
+      ${tile("stat c2 accent","<span class='num' data-count='"+PROJECT.phases.length+"'>0</span><span class='lbl'>路线图阶段</span>",n++)}
+      ${tile("stat c2","<span class='num' data-count='"+taskTotal+"'>0</span><span class='lbl'>已定规格任务</span>",n++)}
+      ${tile("stat c2","<span class='num' data-count='"+taskDone+"'>0</span><span class='lbl'>已完成任务</span>",n++)}
+      ${tile("c2","<div class='k'>下一步行动</div><p>"+next+"</p>",n++)}
     </div>
     <div class="bento">
-      ${tile("c6","<div class='k'>Mission track</div>"+missionTrack(),n++)}
+      ${tile("c6","<div class='k'>使命轨道</div>"+missionTrack(),n++)}
     </div>
     <div class="bento">
-      ${tile("c3","<div class='k'>Task burn · by phase</div>"+taskBurn(),n++)}
-      ${tile("c3","<div class='k'>Definition of Done</div><ul class='checklist'>"+PROJECT.dod.map((d,k)=>`<li><span class='ix'>${pad2(k+1)}</span>${esc(d.text)}</li>`).join("")+"</ul>",n++)}
+      ${tile("c3","<div class='k'>任务燃烧 · 按阶段</div>"+taskBurn(),n++)}
+      ${tile("c3","<div class='k'>完工定义</div><ul class='checklist'>"+PROJECT.dod.map((d,k)=>`<li><span class='ix'>${pad2(k+1)}</span>${esc(d.text)}</li>`).join("")+"</ul>",n++)}
     </div>`;
   return v;
 }
@@ -725,13 +725,13 @@ function viewStack(){
   const layers = new Set(PROJECT.stack.map(r=>r[0]));
   const verified = PROJECT.stack.filter(r=>{ const s=String(r[3]??""); return s==="package.json"||s.startsWith("mcp:"); }).length;
   v.innerHTML = `
-    <div class="vhead"><div class="eye">Technology Stack</div><h1>Stack</h1>
-      <p class="lead">Versions current as of ${esc(PROJECT.meta.generated)}. Each row notes its source — verified from <code>package.json</code>, confirmed via MCP, or flagged for manual checking.</p></div>
+    <div class="vhead"><div class="eye">技术栈</div><h1>技术栈</h1>
+      <p class="lead">版本截至 ${esc(PROJECT.meta.generated)}。每行标注其来源——从 <code>package.json</code> 验证、经 MCP 确认,或标记为手动核对。</p></div>
     <div class="bento">
-      ${tile("stat c2 accent","<span class='num' data-count='"+PROJECT.stack.length+"'>0</span><span class='lbl'>Technologies</span>",n++)}
-      ${tile("stat c2","<span class='num' data-count='"+layers.size+"'>0</span><span class='lbl'>Layers</span>",n++)}
-      ${tile("stat c2","<span class='num' data-count='"+verified+"'>0</span><span class='lbl'>Version-verified</span>",n++)}
-      ${tile("c6","<div class='k'>Stack table</div><table><thead><tr><th>Layer</th><th>Tech</th><th>Version</th><th>Source</th><th>Purpose</th></tr></thead><tbody>"+
+      ${tile("stat c2 accent","<span class='num' data-count='"+PROJECT.stack.length+"'>0</span><span class='lbl'>技术</span>",n++)}
+      ${tile("stat c2","<span class='num' data-count='"+layers.size+"'>0</span><span class='lbl'>分层</span>",n++)}
+      ${tile("stat c2","<span class='num' data-count='"+verified+"'>0</span><span class='lbl'>已验证版本</span>",n++)}
+      ${tile("c6","<div class='k'>技术栈表格</div><table><thead><tr><th>分层</th><th>技术</th><th>版本</th><th>来源</th><th>用途</th></tr></thead><tbody>"+
         PROJECT.stack.map(r=>`<tr><td>${esc(r[0])}</td><td><strong>${esc(r[1])}</strong></td><td class='mono'>${esc(r[2])}</td><td>${srcBadge(r[3])}</td><td>${esc(r[4])}</td></tr>`).join("")+"</tbody></table>",n++)}
     </div>`;
   return v;
@@ -739,16 +739,16 @@ function viewStack(){
 
 function viewPhase(p){
   const v=document.createElement("div"); v.className="view"; v.id="view-phase-"+p.n;
-  const st = p.status==="specced"?"Specced":p.status==="complete"?"Complete":"Roadmap only";
+  const st = p.status==="specced"?"已定规格":p.status==="complete"?"已完成":"仅路线图";
   const isActive = p.n===(activePhase()||{}).n;
-  const head = `<div class="vhead"><span class="phase-numeral" aria-hidden="true">${pad2(p.n)}</span><div class="eye">Phase ${p.n}</div><h1>${esc(p.name)}</h1>
+  const head = `<div class="vhead"><span class="phase-numeral" aria-hidden="true">${pad2(p.n)}</span><div class="eye">阶段 ${p.n}</div><h1>${esc(p.name)}</h1>
     <p class="lead">${esc(p.description)}</p>
-    <div class="badges">${isActive?'<span class="bdg active">active</span>':''}<span class="bdg ${p.priority}">${esc(p.priority)} priority</span><span class="bdg ${p.status}">${st}</span></div></div>`;
+    <div class="badges">${isActive?'<span class="bdg active">进行中</span>':''}<span class="bdg ${p.priority}">${esc(p.priority)} 优先级</span><span class="bdg ${p.status}">${st}</span></div></div>`;
 
   if(p.status==="roadmap-only"){
-    v.innerHTML = head + `<div class="bento">${tile("c6","<div class='k'>Planned scope</div><ul class='checklist'>"+
+    v.innerHTML = head + `<div class="bento">${tile("c6","<div class='k'>规划范围</div><ul class='checklist'>"+
       (p.items||[]).map((it,k)=>`<li><span class='ix'>${pad2(k+1)}</span>${esc(it)}</li>`).join("")+"</ul>",0)}</div>
-      <div class="note">This phase isn't specced yet. Run <code>/own:feature</code> to generate its spec, design &amp; tasks — it auto-detects the next incomplete roadmap phase.</div>`;
+      <div class="note">这个阶段还没定规格。运行 <code>/own:feature</code> 生成它的规格、设计 &amp; 任务——它会自动检测下一个未完成的路线图阶段。</div>`;
     return v;
   }
   const done = p.tasks.filter(t=>t.done).length;
@@ -766,24 +766,24 @@ function viewPhase(p){
 
 function specPanel(p){
   const s=p.spec; let n=0;
-  const stories=(s.userStories||[]).map(u=>`<div class='story'><div><span class='sa'>As a</span>${esc(u.actor)}</div><div><span class='sa'>I want</span>${esc(u.want)}</div><div><span class='sa'>So that</span>${esc(u.soThat)}</div></div>`).join("");
+  const stories=(s.userStories||[]).map(u=>`<div class='story'><div><span class='sa'>作为</span>${esc(u.actor)}</div><div><span class='sa'>我想要</span>${esc(u.want)}</div><div><span class='sa'>以便</span>${esc(u.soThat)}</div></div>`).join("");
   const oq=(s.openQuestions||[]);
   return `
     <div class="bento">
-      ${tile("stat c2 accent","<span class='num'>"+s.criteria.length+"</span><span class='lbl'>Acceptance criteria</span>",n++)}
-      ${tile("stat c2","<span class='num'>"+s.edges.length+"</span><span class='lbl'>Edge cases</span>",n++)}
-      ${tile("stat c2","<span class='num'>"+(s.userStories||[]).length+"</span><span class='lbl'>User stories</span>",n++)}
+      ${tile("stat c2 accent","<span class='num'>"+s.criteria.length+"</span><span class='lbl'>验收标准</span>",n++)}
+      ${tile("stat c2","<span class='num'>"+s.edges.length+"</span><span class='lbl'>边界情况</span>",n++)}
+      ${tile("stat c2","<span class='num'>"+(s.userStories||[]).length+"</span><span class='lbl'>用户故事</span>",n++)}
     </div>
     <div class="bento">
-      ${tile("hero c4","<div class='k'>Overview</div><p>"+esc(s.overview)+"</p>",n++)}
-      ${tile("c2","<div class='k'>Out of scope</div><div class='chips'>"+s.outOfScope.map(o=>`<span class='chip'>${esc(o)}</span>`).join("")+"</div>",n++)}
+      ${tile("hero c4","<div class='k'>概览</div><p>"+esc(s.overview)+"</p>",n++)}
+      ${tile("c2","<div class='k'>不在范围</div><div class='chips'>"+s.outOfScope.map(o=>`<span class='chip'>${esc(o)}</span>`).join("")+"</div>",n++)}
     </div>
-    ${s.motivation?`<div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">Why this feature</div><p>${esc(s.motivation)}</p></div></div>`:""}
-    ${stories?`<div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">User stories</div><div class="stories">${stories}</div></div></div>`:""}
-    <div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">Acceptance criteria</div><ul class="checklist">${s.criteria.map((c,k)=>`<li><span class='ix'>AC${k+1}</span>${esc(c)}</li>`).join("")}</ul></div></div>
-    <div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">Edge cases · must handle</div>
-      <div class="minis">${s.edges.map((e,k)=>`<div class='mini'><span class='ei'>Edge ${pad2(k+1)}</span><b>${esc(e[0])}</b><span class='tx'>${esc(e[1])}</span></div>`).join("")}</div></div></div>
-    ${oq.length?`<div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">Open questions</div><ul class="qlist">${oq.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></div></div>`:""}`;
+    ${s.motivation?`<div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">为何做这个功能</div><p>${esc(s.motivation)}</p></div></div>`:""}
+    ${stories?`<div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">用户故事</div><div class="stories">${stories}</div></div></div>`:""}
+    <div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">验收标准</div><ul class="checklist">${s.criteria.map((c,k)=>`<li><span class='ix'>AC${k+1}</span>${esc(c)}</li>`).join("")}</ul></div></div>
+    <div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">边界情况 · 必须处理</div>
+      <div class="minis">${s.edges.map((e,k)=>`<div class='mini'><span class='ei'>边界 ${pad2(k+1)}</span><b>${esc(e[0])}</b><span class='tx'>${esc(e[1])}</span></div>`).join("")}</div></div></div>
+    ${oq.length?`<div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">待定问题</div><ul class="qlist">${oq.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></div></div>`:""}`;
 }
 
 function designPanel(p){
@@ -791,22 +791,22 @@ function designPanel(p){
   const oq=(d.openQuestions||[]);
   return `
     <div class="bento">
-      ${tile("hero c4","<div class='k'>Architecture</div><p>"+esc(d.overview)+"</p>",n++)}
-      ${tile("stat c2 accent","<span class='num'>"+d.components.length+"</span><span class='lbl'>Modules</span>",n++)}
+      ${tile("hero c4","<div class='k'>架构</div><p>"+esc(d.overview)+"</p>",n++)}
+      ${tile("stat c2 accent","<span class='num'>"+d.components.length+"</span><span class='lbl'>模块</span>",n++)}
     </div>
-    ${d.diagram?`<div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">Architecture map</div>
+    ${d.diagram?`<div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">架构图</div>
       <div class="archwrap">${renderArch(d.diagram)}</div>
       <p class="archcap">${esc(d.diagram.caption)}</p></div></div>`:""}
-    <div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">Data flow</div>
+    <div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">数据流</div>
       <div class="flow">${d.flow.map((f,k)=>`<div class='step'><div class='sn'>${k+1}</div><div class='st'>${esc(f)}</div></div>`+(k<d.flow.length-1?`<span class='farrow'>&rarr;</span>`:"")).join("")}</div></div></div>
-    <div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">Trade-offs &amp; decisions</div>
+    <div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">权衡 &amp; 取舍</div>
       <div class="trades">${d.tradeoffs.map(t=>`<div class='trade'><h4>${esc(t.title)}</h4>
-        <div class='ln ch'><b>Chosen:</b> ${esc(t.chosen)}</div>
-        <div class='ln rj'><b>Rejected:</b> ${esc(t.rejected)}</div>
-        <div class='why'><b>Why:</b> ${esc(t.why)}</div></div>`).join("")}</div></div></div>
-    <div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">Component breakdown</div>
+        <div class='ln ch'><b>选中:</b> ${esc(t.chosen)}</div>
+        <div class='ln rj'><b>放弃:</b> ${esc(t.rejected)}</div>
+        <div class='why'><b>为何:</b> ${esc(t.why)}</div></div>`).join("")}</div></div></div>
+    <div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">组件拆分</div>
       <div class="comps">${d.components.map(c=>`<div class='comp'><div class='mn'>${esc(c[0])}${c[2]?`<span class='kind ${esc(c[2])}'>${esc(c[2])}</span>`:""}</div><div class='rs'>${esc(c[1])}</div>${c[3]?`<div class='loc'>${esc(c[3])}</div>`:""}</div>`).join("")}</div></div></div>
-    ${oq.length?`<div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">Open questions</div><ul class="qlist">${oq.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></div></div>`:""}`;
+    ${oq.length?`<div class="bento"><div class="tile c6" style="--i:${n++}"><div class="k">待定问题</div><ul class="qlist">${oq.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></div></div>`:""}`;
 }
 
 function tasksPanel(p){
@@ -828,7 +828,7 @@ function tasksPanel(p){
         ${t.detail?`<div class="det">${esc(t.detail)}</div>`:''}</div>`).join("")}</div>`;
   }).join("");
   return `<div class="tasktop">${ring}
-      <div class="summ"><b>${done}/${total}</b> <span class="s2">tasks complete</span></div>
+      <div class="summ"><b>${done}/${total}</b> <span class="s2">任务完成</span></div>
       <div class="grpstats">${gstats}</div></div>
     <div class="kanban">${cols}</div>`;
 }
@@ -893,7 +893,7 @@ function wire(){
     palSel=0;
     palLs.innerHTML=palItems.map((it,i)=>`<li class="${i===palSel?'sel':''}" data-i="${i}">
       <span class="pd ${it.dot||''}"></span>${esc(it.label)}<span class="pk"><kbd>${i+1<10?i+1:''}</kbd></span></li>`).join("")
-      ||`<li style="color:var(--text-dim)">no match — try a phase name</li>`;
+      ||`<li style="color:var(--text-dim)">无匹配 — 试试输入阶段名</li>`;
   }
   function palGo(){ const it=palItems[palSel]; if(it){ palClose(); goView(it.v); } }
   $("#palBtn").addEventListener("click", palOpen);
@@ -938,10 +938,10 @@ function boot(){
   const m=PROJECT.meta, {d,t}=taskTotals();
   const lines=[
     {tx:`$ own status --dashboard`, cls:"cmd"},
-    {tx:`▸ reading dashboard-data.js ......... ok`},
-    {tx:`▸ project: ${m.name} · phases: ${PROJECT.phases.length} · tasks: ${d}/${t}`},
-    {tx:`▸ compositing terminal-futurism ..... ok`},
-    {tx:`$ welcome back. own your code.`, cls:"cmd", caret:true},
+    {tx:`▸ 读取 dashboard-data.js ......... ok`},
+    {tx:`▸ 项目: ${m.name} · 阶段: ${PROJECT.phases.length} · 任务: ${d}/${t}`},
+    {tx:`▸ 合成 terminal-futurism ........ ok`},
+    {tx:`$ 欢迎回来。own your code.`, cls:"cmd", caret:true},
   ];
   const body=$("#bootBody");
   let delay=0.15;
@@ -962,14 +962,14 @@ function boot(){
 
 /* Boot — guard against a missing/failed data file */
 if (!PROJECT) {
-  $("#main").innerHTML = '<div class="note">⚠️ <strong>dashboard-data.js</strong> didn\'t load. It must sit next to dashboard.html. The /own:* commands keep it in sync.</div>';
+  $("#main").innerHTML = '<div class="note">⚠️ <strong>dashboard-data.js</strong> 未能加载。它必须与 dashboard.html 放在同一目录。/own:* 命令负责保持其同步。</div>';
   document.body.classList.add("booted"); $("#boot").remove();
 } else {
   renderHeader(); renderSidebar(); renderTmux(); renderViews();
   /* palette + shortcut order: overview, stack, then phases */
-  viewOrder.push({label:"Overview", v:"overview", dot:"specced"});
-  viewOrder.push({label:"Stack", v:"stack", dot:"specced"});
-  PROJECT.phases.forEach(p=>viewOrder.push({label:`Phase ${p.n} — ${p.name}`, v:"phase-"+p.n, dot:p.status==="complete"?"complete":p.status==="specced"?"specced":""}));
+  viewOrder.push({label:"概览", v:"overview", dot:"specced"});
+  viewOrder.push({label:"技术栈", v:"stack", dot:"specced"});
+  PROJECT.phases.forEach(p=>viewOrder.push({label:`阶段 ${p.n} — ${p.name}`, v:"phase-"+p.n, dot:p.status==="complete"?"complete":p.status==="specced"?"specced":""}));
   wire(); boot();
 }
 </script>

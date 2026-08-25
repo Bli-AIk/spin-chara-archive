@@ -17,3 +17,6 @@ dist-*/
 
 # GUI source is optional and cloned on demand by `just gui-dev`.
 libraries/kristal-debug-tools-gui/
+
+# OwnYourCode - personal career tracking
+ownyourcode/career/

@@ -60,7 +60,7 @@
     // Optional content by real library ID; disabled libs are removed before
     // init, and required dependents follow (UMR follows MGR).
     "optionalLibraries": {
-        "magical-glass": false,
+        "magical-glass": true,
         "undertale_monsters_recreation": true
     },
 
